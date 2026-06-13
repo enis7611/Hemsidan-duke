@@ -1,0 +1,16 @@
+# Lokala Claude Code-inställningar (maskinspecifika)
+.claude/settings.local.json
+
+# OS-skräp
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Playwright/MCP-artefakter
+.playwright-mcp/
+*.tmp
