@@ -11,6 +11,7 @@ $ErrorActionPreference = 'Stop'
 $utf8 = [Text.UTF8Encoding]::new($false)
 
 function Las-Lf([string]$sokvag) {
+  if (-not (Test-Path -LiteralPath $sokvag -PathType Leaf)) { throw "Filen finns inte: $sokvag" }
   $strikt = [Text.UTF8Encoding]::new($false, $true)   # kastar på ogiltig UTF-8
   try { $text = $strikt.GetString([IO.File]::ReadAllBytes($sokvag)) }
   catch { throw "Filen är inte giltig UTF-8 (spara om den som UTF-8): $sokvag" }

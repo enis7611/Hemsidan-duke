@@ -70,5 +70,9 @@ Kastar { & $bygg -Innehall $p -Ut $ut } "tom titel avvisas"
 $p = Skriv 'ejstangd.html' "<!--`ntitle: T`ndescription: D`npage-css:`n<section>Hej</section>`n"
 Kastar { & $bygg -Innehall $p -Ut $ut } "ostängd metadata avvisas"
 
+# 8. Saknad innehållsfil ger tydligt fel (inte "ogiltig UTF-8")
+try { & $bygg -Innehall (Join-Path $tmp 'finns-inte.html') -Ut $ut | Out-Null; Ok $false "saknad fil avvisas (inget fel kastades)" }
+catch { Ok ($_.Exception.Message -like '*finns inte*') "saknad fil ger felet 'finns inte' [$($_.Exception.Message)]" }
+
 Remove-Item -Recurse -Force $tmp
 if ($script:fel) { Write-Host "$($script:fel) test fallerade" -ForegroundColor Red; exit 1 } else { Write-Host "Alla test OK"; exit 0 }

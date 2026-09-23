@@ -1,0 +1,179 @@
+<!--
+title: Komponentdemo | Duke Systems AB
+description: Visuell kontroll av komponentkatalogen
+page-css:
+  .mcp-cat{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.05em;border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:7px 14px;color:rgba(255,255,255,0.78);white-space:nowrap;}
+  .spec-row{display:flex;justify-content:space-between;gap:1rem;padding:0.85rem 0;border-bottom:1px solid rgba(255,255,255,0.12);}
+  .spec-row:last-child{border-bottom:none;}
+  .spec-row .k{color:rgba(255,255,255,0.7);font-size:0.9rem;}
+  .spec-row .v{color:#fff;font-weight:500;font-size:0.9rem;text-align:right;font-family:var(--mono);}
+  .duke-table{width:100%;max-width:820px;margin:0 auto;border-collapse:collapse;font-size:0.92rem;}
+  .duke-table th{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);text-align:left;padding:0.75rem 1rem;border-bottom:2px solid var(--teal);}
+  .duke-table td{padding:0.75rem 1rem;border-bottom:1px solid var(--border);color:var(--navy);vertical-align:top;}
+  .duke-table tr:last-child td{border-bottom:none;}
+  .duke-table-wrap{overflow-x:auto;}
+-->
+<!-- ─── PRODUKT-HERO ─────────────────────────────────────── -->
+<section id="top" style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 45%,#2d7a7a 100%);padding:140px 0 80px;position:relative;overflow:hidden;">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <a href="index.html#branscher" data-sv="← Tillbaka till översikten" data-en="← Back to overview" style="display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--steel-lt);text-decoration:none;margin-bottom:1.5rem;">← Tillbaka till översikten</a>
+    <div style="display:inline-flex;align-items:center;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <span style="font-size:2rem;">🏭</span>
+      <span class="section-label" style="color:var(--steel-lt);margin:0;" data-sv="Kategori · underkategori" data-en="Category · subcategory">Kategori · underkategori</span>
+    </div>
+    <h1 style="color:#fff;margin-bottom:1.25rem;" data-sv="Sidans rubrik" data-en="Page heading">Sidans rubrik</h1>
+    <p style="font-size:1.15rem;color:rgba(255,255,255,0.8);max-width:640px;margin-bottom:1rem;" data-sv="Ingress på svenska." data-en="Lead paragraph in English.">Ingress på svenska.</p>
+    <p style="color:rgba(255,255,255,0.6);max-width:640px;margin-bottom:2.25rem;" data-sv="Valfritt andra stycke." data-en="Optional second paragraph.">Valfritt andra stycke.</p>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+      <a href="index.html#kontakt" class="btn btn-primary" data-sv="Berätta om ditt problem" data-en="Tell us about your problem">Berätta om ditt problem</a>
+      <a href="#forsta-sektionen" class="btn btn-ghost" data-sv="Läs mer" data-en="Read more">Läs mer</a>
+    </div>
+    <div style="display:flex;gap:2.5rem;flex-wrap:wrap;margin-top:3rem;">
+      <div><div style="font-family:var(--serif);font-size:2rem;font-weight:700;color:#fff;line-height:1;">42</div><div style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--steel-lt);margin-top:0.3rem;" data-sv="nyckeltal" data-en="key figure">nyckeltal</div></div>
+    </div>
+  </div>
+</section>
+<!-- ─── RUBRIK I VERSALER ─────────────────────────────────── -->
+<section id="forsta-sektionen" style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label" data-sv="Etikett" data-en="Label">Etikett</span>
+      <h2 style="color:var(--navy);" data-sv="Sektionsrubrik" data-en="Section heading">Sektionsrubrik</h2>
+      <p data-sv="Inledande mening." data-en="Introductory sentence.">Inledande mening.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1"><div class="card-icon teal">📈</div><h3 data-sv="Rubrik" data-en="Heading">Rubrik</h3><p data-sv="Kort beskrivning." data-en="Short description.">Kort beskrivning.</p></div>
+    </div>
+  </div>
+</section>
+<!-- ─── RUBRIK I VERSALER ─────────────────────────────────── -->
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);" data-sv="Etikett" data-en="Label">Etikett</span>
+      <h2 style="color:#fff;" data-sv="Sektionsrubrik" data-en="Section heading">Sektionsrubrik</h2>
+      <p style="color:rgba(255,255,255,0.72);" data-sv="Inledande mening." data-en="Introductory sentence.">Inledande mening.</p>
+    </div>
+    <div style="max-width:620px;margin:0 auto;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.13);border-radius:12px;padding:1.5rem 2rem;">
+      <div class="spec-row"><span class="k" data-sv="Egenskap" data-en="Property">Egenskap</span><span class="v">~100 µs</span></div>
+    </div>
+  </div>
+</section>
+<!-- ─── RUBRIK I VERSALER ─────────────────────────────────── -->
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label" data-sv="Etikett" data-en="Label">Etikett</span>
+      <h2 style="color:var(--navy);" data-sv="Sektionsrubrik" data-en="Section heading">Sektionsrubrik</h2>
+      <p data-sv="Inledande mening." data-en="Introductory sentence.">Inledande mening.</p>
+    </div>
+    <div class="reveal reveal-delay-1" style="display:flex;justify-content:center;align-items:center;gap:0.6rem;flex-wrap:wrap;margin-bottom:2.5rem;">
+      <span class="mcp-cat" style="color:var(--navy);border-color:var(--border);background:var(--bg);" data-sv="1 · Första steget" data-en="1 · First step">1 · Första steget</span>
+      <span style="color:var(--text-muted);">→</span>
+      <span class="mcp-cat" style="color:var(--navy);border-color:var(--border);background:var(--bg);" data-sv="2 · Andra steget" data-en="2 · Second step">2 · Andra steget</span>
+      <span style="color:var(--text-muted);">→</span>
+      <span class="mcp-cat" style="color:var(--navy);border-color:var(--border);background:var(--bg);" data-sv="3 · Tredje steget" data-en="3 · Third step">3 · Tredje steget</span>
+    </div>
+  </div>
+</section>
+<!-- ─── RUBRIK I VERSALER ─────────────────────────────────── -->
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);" data-sv="Etikett" data-en="Label">Etikett</span>
+      <h2 style="color:#fff;" data-sv="Sektionsrubrik" data-en="Section heading">Sektionsrubrik</h2>
+      <p style="color:rgba(255,255,255,0.72);" data-sv="Inledande mening." data-en="Introductory sentence.">Inledande mening.</p>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">🔄</div><h3 data-sv="Rubrik" data-en="Heading">Rubrik</h3><p data-sv="Kort beskrivning." data-en="Short description.">Kort beskrivning.</p></div>
+    </div>
+    <div class="reveal reveal-delay-1" style="display:flex;justify-content:center;align-items:center;gap:0.6rem;flex-wrap:wrap;margin-bottom:2.5rem;">
+      <span class="mcp-cat" data-sv="1 · Första steget" data-en="1 · First step">1 · Första steget</span>
+      <span style="color:rgba(255,255,255,0.4);">→</span>
+      <span class="mcp-cat" data-sv="2 · Andra steget" data-en="2 · Second step">2 · Andra steget</span>
+      <span style="color:rgba(255,255,255,0.4);">→</span>
+      <span class="mcp-cat" data-sv="3 · Tredje steget" data-en="3 · Third step">3 · Tredje steget</span>
+    </div>
+  </div>
+</section>
+<!-- ─── RUBRIK I VERSALER ─────────────────────────────────── -->
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label" data-sv="Etikett" data-en="Label">Etikett</span>
+      <h2 style="color:var(--navy);" data-sv="Sektionsrubrik" data-en="Section heading">Sektionsrubrik</h2>
+      <p data-sv="Inledande mening." data-en="Introductory sentence.">Inledande mening.</p>
+    </div>
+    <div class="konsult-grid">
+      <div class="konsult-track reveal reveal-delay-1">
+        <h3 data-sv="Första spåret" data-en="First track">Första spåret</h3>
+        <div class="track-items">
+          <div class="track-item"><div class="track-item-icon">✅</div><div><h4 data-sv="Punkt" data-en="Item">Punkt</h4><p data-sv="Kort beskrivning." data-en="Short description.">Kort beskrivning.</p></div></div>
+        </div>
+      </div>
+      <div class="konsult-track reveal reveal-delay-2" style="background:var(--bg);">
+        <h3 data-sv="Andra spåret" data-en="Second track">Andra spåret</h3>
+        <div class="track-items">
+          <div class="track-item"><div class="track-item-icon">🔜</div><div><h4 data-sv="Punkt" data-en="Item">Punkt</h4><p data-sv="Kort beskrivning." data-en="Short description.">Kort beskrivning.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ─── RUBRIK I VERSALER ─────────────────────────────────── -->
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);" data-sv="Etikett" data-en="Label">Etikett</span>
+      <h2 style="color:#fff;" data-sv="Sektionsrubrik" data-en="Section heading">Sektionsrubrik</h2>
+      <p style="color:rgba(255,255,255,0.72);" data-sv="Inledande mening." data-en="Introductory sentence.">Inledande mening.</p>
+    </div>
+    <div class="mcp-terminal reveal" style="background:rgba(0,0,0,0.4);">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div>
+        <span class="terminal-title">Titel</span>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line"><span class="terminal-prompt" data-sv="Du" data-en="You">Du</span><span class="terminal-cmd" data-sv="Fråga på svenska" data-en="Question in English">Fråga på svenska</span></div>
+        <div class="terminal-line"><span class="terminal-prompt" style="color:var(--teal);">AI</span><span class="terminal-result" data-sv="→ svar ✓" data-en="→ answer ✓">→ svar ✓</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ─── RUBRIK I VERSALER ─────────────────────────────────── -->
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label" data-sv="Etikett" data-en="Label">Etikett</span>
+      <h2 style="color:var(--navy);" data-sv="Sektionsrubrik" data-en="Section heading">Sektionsrubrik</h2>
+      <p data-sv="Inledande mening." data-en="Introductory sentence.">Inledande mening.</p>
+    </div>
+    <div class="reveal" style="max-width:680px;margin:0 auto;">
+      <p style="margin-bottom:1.1rem;" data-sv="Stycke på svenska." data-en="Paragraph in English.">Stycke på svenska.</p>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th data-sv="Kolumn" data-en="Column">Kolumn</th><th data-sv="Värde" data-en="Value">Värde</th></tr></thead>
+        <tbody><tr><td data-sv="Rad" data-en="Row">Rad</td><td>42</td></tr></tbody>
+      </table>
+    </div>
+    <figure class="reveal" style="max-width:820px;margin:0 auto;text-align:center;">
+      <img src="img/finns-ej.png" alt="Beskrivning" data-alt-en="Description" style="max-width:100%;height:auto;border-radius:12px;border:1px solid var(--border);">
+      <figcaption style="font-size:0.85rem;color:var(--text-muted);margin-top:0.75rem;" data-sv="Bildtext." data-en="Caption.">Bildtext.</figcaption>
+    </figure>
+  </div>
+</section>
+<!-- ─── CTA ──────────────────────────────────────────────── -->
+<section style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 50%,#287070 100%);padding:80px 0;text-align:center;">
+  <div class="container" style="position:relative;z-index:2;">
+    <h2 style="color:#fff;margin-bottom:1rem;" data-sv="Fråga som knyter an till sidan?" data-en="Question tied to the page?">Fråga som knyter an till sidan?</h2>
+    <p style="color:rgba(255,255,255,0.75);max-width:480px;margin:0 auto 2.5rem;" data-sv="En mening om vad vi kan hjälpa till med." data-en="One sentence on how we can help.">En mening om vad vi kan hjälpa till med.</p>
+    <a href="index.html#kontakt" class="btn btn-primary" data-sv="Berätta om ditt problem" data-en="Tell us about your problem">Berätta om ditt problem</a>
+  </div>
+</section>
+

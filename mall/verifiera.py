@@ -53,6 +53,12 @@ def lyssna_efter_fel(page, fel: list):
     page.on("pageerror", lambda e: fel.append(f"JS-fel: {e}"))
 
 
+def visa_allt(page):
+    """Gör scroll-animerade element (.reveal) synliga så att en helsidesdump visar allt innehåll."""
+    page.evaluate("document.querySelectorAll('.reveal').forEach(e => e.classList.add('visible'))")
+    page.wait_for_timeout(1000)  # låt CSS-övergången (inkl. reveal-delay) bli klar
+
+
 def kontrollera_lankar(page, rot: Path, sida: str) -> list:
     fel = []
     ids = set(page.eval_on_selector_all("[id]", "els => els.map(e => e.id)"))
@@ -113,6 +119,7 @@ def verifiera(rot: Path, sida: str, fran=None, skarmdumpar=None) -> list:
             page.goto(f"{bas}/{sida}", wait_until="load")
             if skarmdumpar:
                 Path(skarmdumpar).mkdir(parents=True, exist_ok=True)
+                visa_allt(page)
                 page.screenshot(path=str(Path(skarmdumpar) / f"{namn}-sv-desktop.png"), full_page=True)
             fel += kontrollera_sprak(page)
             fel += kontrollera_lankar(page, rot, sida)
@@ -126,6 +133,7 @@ def verifiera(rot: Path, sida: str, fran=None, skarmdumpar=None) -> list:
             mobil.click("#hamburger")
             if skarmdumpar:
                 mobil.evaluate("toggleLang()")
+                visa_allt(mobil)
                 mobil.screenshot(path=str(Path(skarmdumpar) / f"{namn}-en-mobil.png"), full_page=True)
             browser.close()
     finally:

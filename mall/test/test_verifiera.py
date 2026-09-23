@@ -7,7 +7,8 @@ from pathlib import Path
 
 ROT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROT / "mall"))
-from verifiera import verifiera  # noqa: E402
+from verifiera import starta_server, verifiera, visa_allt  # noqa: E402
+from playwright.sync_api import sync_playwright  # noqa: E402
 
 fel_antal = 0
 
@@ -49,6 +50,19 @@ with tempfile.TemporaryDirectory() as tmp:
     ok(innehaller(fel, "#saknas"), "trasigt ankare rapporteras")
     ok(innehaller(fel, "index.html#finns-inte-heller"), "trasigt ankare på annan sida rapporteras")
     ok(innehaller(fel, "länkas inte från index.html"), "saknad inlänkning rapporteras")
+
+# 3. Inför skärmdump ska alla scroll-animerade element (.reveal) göras synliga
+httpd, bas = starta_server(ROT / "site")
+try:
+    with sync_playwright() as p:
+        b = p.chromium.launch(); page = b.new_page()
+        page.goto(f"{bas}/extendmqtt.html")
+        visa_allt(page)
+        dolda = page.evaluate("document.querySelectorAll('.reveal:not(.visible)').length")
+        ok(dolda == 0, f"alla .reveal synliga före skärmdump (dolda: {dolda})")
+        b.close()
+finally:
+    httpd.shutdown()
 
 print("Alla test OK" if fel_antal == 0 else f"{fel_antal} test fallerade")
 sys.exit(1 if fel_antal else 0)
