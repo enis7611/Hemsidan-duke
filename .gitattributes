@@ -1,0 +1,5 @@
+# Sidorna och mallen byggs byte-identiskt med LF (mall/bygg-sida.ps1) – låt inte git göra om till CRLF.
+*.html text eol=lf
+*.ps1  text eol=lf
+*.py   text eol=lf
+*.md   text eol=lf
