@@ -1,0 +1,474 @@
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo-main"><span class="logo-asterisks">**</span> Duke Systems <span class="logo-asterisks">**</span></div>
+        <div class="footer-logo-sub" id="footerSub">Nordisk distributör · Sedan 1988</div>
+        <p id="footerTagline">Vi löser problemet. Sedan 1988. Officiell Nordic Reseller för ExtendSim från ANDRITZ Inc.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4 id="fColProd">Produkter</h4>
+        <ul>
+          <li><a href="index.html#extendsim">ExtendSim CP</a></li>
+          <li><a href="index.html#extendsim">ExtendSim DE</a></li>
+          <li><a href="index.html#extendsim">ExtendSim Pro</a></li>
+          <li><a href="index.html#mcp">SimulationsMCP <span class="new-tag">NY</span></a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 id="fColTjanster">Tjänster</h4>
+        <ul>
+          <li><a href="index.html#konsult" id="fKonsult">Simuleringskonsult</a></li>
+          <li><a href="index.html#konsult" id="fModell">Modellbyggnad</a></li>
+          <li><a href="index.html#konsult" id="fUtb">Utbildning</a></li>
+          <li><a href="index.html#konsult" id="fInfra">IT-infrastruktur</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 id="fColKontakt">Kontakt</h4>
+        <ul>
+          <li><a href="mailto:info@duke.se">info@duke.se</a></li>
+          <li><a href="index.html#om-oss" id="fOmOss">Om Duke Systems</a></li>
+          <li><a href="index.html#kontakt" id="fKontaktForm">Kontaktformulär</a></li>
+          <li><a href="index.html#sekretesspolicy">Sekretesspolicy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p id="copyright">© 2025 Duke Systems AB · Alla rättigheter förbehållna</p>
+      <div style="display:flex;gap:1.5rem;">
+        <a href="index.html#sekretesspolicy">Sekretesspolicy</a>
+        <a href="https://extendsim.com" target="_blank" rel="noopener">extendsim.com</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── SCRIPTS ───────────────────────────────────────────── -->
+<script>
+// Sticky header shadow
+const header = document.getElementById('header');
+window.addEventListener('scroll', () => {
+  header.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// Hamburger menu
+const hamburger = document.getElementById('hamburger');
+const mobileNav = document.getElementById('mobileNav');
+hamburger.addEventListener('click', () => {
+  mobileNav.classList.toggle('open');
+  const spans = hamburger.querySelectorAll('span');
+  if (mobileNav.classList.contains('open')) {
+    spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+    spans[1].style.opacity = '0';
+    spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+  } else {
+    spans.forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+  }
+});
+
+function closeMobileNav() {
+  mobileNav.classList.remove('open');
+  hamburger.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+}
+
+// Scroll reveal
+const revealEls = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+revealEls.forEach(el => revealObserver.observe(el));
+
+// Form submit (demo)
+function handleSubmit() {
+  const gdpr = document.getElementById('gdpr');
+  const name = document.getElementById('name');
+  const email = document.getElementById('email');
+  const arende = document.getElementById('arende');
+  const meddelande = document.getElementById('meddelande');
+
+  if (!name.value.trim() || !email.value.trim() || !gdpr.checked) {
+    alert(currentLang === 'en'
+      ? 'Please fill in name, email and accept the privacy policy.'
+      : 'Vänligen fyll i namn, e-post och godkänn sekretesspolicyn.');
+    return;
+  }
+
+  const subject = encodeURIComponent(
+    arende.value || (currentLang === 'en' ? 'Enquiry from duke.se' : 'Förfrågan från duke.se')
+  );
+  const body = encodeURIComponent(
+    (currentLang === 'en' ? 'Name: ' : 'Namn: ') + name.value + '\n' +
+    'Email: ' + email.value + '\n' +
+    (currentLang === 'en' ? 'Subject: ' : 'Ärende: ') + (arende.value || '—') + '\n\n' +
+    meddelande.value
+  );
+
+  window.location.href = 'mailto:info@duke.se?subject=' + subject + '&body=' + body;
+
+  document.getElementById('form-success').style.display = 'block';
+}
+
+// ─── LANGUAGE SWITCHER ─────────────────────────────────────
+const translations = {
+  sv: {
+    navConsult: 'Konsult', navAbout: 'Om oss', navContact: 'Kontakt',
+    navCta: 'Kontakta oss', mcpBadge: 'NY',
+    mobileConsult: 'Konsulttjänster', mobileAbout: 'Om oss', mobileContact: 'Kontakta oss',
+
+    heroEyebrow: 'Nordisk distributör av ExtendSim',
+    heroTitle: 'Vi löser<br><em>problemet.</em><br>Sedan 1988.',
+    heroSub: 'Duke Systems har hjälpt nordiska företag att simulera, optimera och drifta sedan 1988. Vi säljer inte produkter — vi löser problem. Och sedan stannar vi kvar.',
+    heroCta1: 'Utforska erbjudandet', heroCta2: 'Berätta om ditt problem',
+    simLabel: 'ExtendSim · Simuleringsmodell',
+
+    servLabel: 'Vad vi erbjuder',
+    servTitle: 'Tre erbjudanden — ett fokus',
+    servSub: 'Oavsett om du behöver simulera en produktionsanläggning, integrera AI med dina modeller eller stärka er infrastruktur — vi har löst det förut.',
+    card1Title: 'ExtendSim', card1Text: 'Nordisk distributör av ExtendSim sedan 1988. Mjukvara för diskret, kontinuerlig och rate-baserad simulering — från ANDRITZ Inc.', card1Link: 'Utforska ExtendSim →',
+    card2Title: 'SimulationsMCP', card2Text: 'Koppla dina AI-assistenter direkt till ExtendSim via Model Context Protocol. Styr och fråga dina simuleringsmodeller med naturligt språk.', card2Link: 'Läs om MCP-integrationen →',
+    card3Title: 'Konsulttjänster', card3Text: 'Simuleringskonsult och IT-infrastruktur. Vi bygger modeller, utbildar team och förvaltar er infrastruktur med Commvault, Azure och Windows Server.', card3Link: 'Se konsulttjänsterna →',
+
+    varforLabel: 'Varför Duke Systems',
+    varforTitle: 'Problemlösning är vår kärnkompetens',
+    varforSub: 'Vi har sett de flesta problem förut. Det är vår styrka.',
+    p1Title: 'År av erfarenhet', p1Sub: 'Grundades och började distribuera ExtendSim i Skandinavien 1988.',
+    p2Title: 'Fokuserade erbjudanden', p2Sub: 'ExtendSim, MCP-integration och IT-infrastruktur. Inget mer, inget mindre.',
+    p3Title: 'Långsiktigt partnerskap', p3Sub: 'Många av våra kundrelationer sträcker sig över decennier. Vi stannar kvar.',
+    p4Title: 'Nordisk täckning', p4Sub: 'Officiell Nordic Reseller för ANDRITZ Inc. ExtendSim — Sverige, Norge, Danmark, Finland.',
+
+    extLabel: 'Simuleringsmjukvara',
+    extTitle: 'ExtendSim — kraftfull simulering för verkliga problem',
+    extBadge: 'Distribueras av ANDRITZ Inc. · Nordisk Reseller: Duke Systems AB',
+    extText1: 'ExtendSim är ett komplett verktyg för att modellera och analysera komplexa system — från en enkel process till en hel produktionsanläggning.',
+    extText2: 'Vi har distribuerat ExtendSim i Norden sedan 1988 och erbjuder licenser, utbildning och support på svenska.',
+    extCta1: 'Begär offert', extCta2: 'extendsim.com →',
+    licTitle: 'Licensmodeller',
+    lic1Title: 'Standalone', lic1Text: 'En licens per användare och dator. Rätt att installera på bärbar dator/hemdator förutsatt att de ej används samtidigt.',
+    lic2Title: 'Nätverkslicens (Concurrent)', lic2Text: 'Ett visst antal samtidiga användare i nätverksmiljö. Kostnadseffektivt för team med varierande simuleringsbehov.',
+
+    mcpLabel: 'AI-integration',
+    mcpTitle: 'ExtendSim möter AI — <span>styr din simulering med naturligt språk</span>',
+    mcpSub: 'Duke Systems erbjuder SimulationsMCP: en integration baserad på Model Context Protocol som låter AI-assistenter kommunicera direkt med dina simuleringsmodeller.',
+    ovTitle: 'ExtendSim möter AI — <span style="color:var(--teal);">tre verktyg, en sammanhållen kedja</span>',
+    ovSub: 'Beskriv ditt problem på naturligt språk: <strong style="color:#fff;font-weight:600;">SimulationsMCP Build</strong> bygger blocken, <strong style="color:#fff;font-weight:600;">SimulationsMCP</strong> kör modellen, och <strong style="color:#fff;font-weight:600;">ExtendMQTT</strong> kopplar simuleringen mot verkligheten i realtid.',
+    fn1Title: 'AI-assistent', fn1Sub: 'Claude, ChatGPT<br>eller Copilot',
+    fn2Title: 'SimulationsMCP', fn2Sub: 'Duke Systems<br>MCP-server',
+    fn3Title: 'Din modell', fn3Sub: 'ExtendSim<br>simulering',
+    compatLabel: 'Kompatibla AI-assistenter', compatReq: 'Kräver ExtendSim-licens',
+    mcpCta: 'Boka en demo',
+
+    konsultLabel: 'Konsulttjänster',
+    konsultTitle: 'Vi löser problem — inte bara säljer produkter',
+    konsultSub: 'Två spår: simuleringskonsult och IT-infrastruktur. Båda med lång erfarenhet och ett långsiktigt perspektiv.',
+    track1Title: '📐 Simuleringskonsult', track1Sub: 'Från modellbyggnad till analys och utbildning — med ExtendSim som verktyg.',
+    ti1Title: 'Modellbyggnad', ti1Text: 'Vi skapar simuleringsmodeller av din produktionsanläggning, logistikflöde eller process i ExtendSim.',
+    ti2Title: 'Analys & optimering', ti2Text: 'Scenarioanalys, flaskhalsidentifiering och kapacitetsplanering baserat på din faktiska data.',
+    ti3Title: 'Utbildning', ti3Text: 'Grundkurs och avancerad kurs i ExtendSim. Anpassad till er organisation.',
+    ti4Title: 'MCP-implementation', ti4Text: 'Vi hjälper er sätta upp SimulationsMCP — hela kedjan från installation till första AI-frågan.',
+    track2Title: '🖥️ IT-infrastruktur', track2Sub: 'Lång erfarenhet av att bygga och förvalta IT-miljöer för nordiska organisationer.',
+    ti5Title: 'Commvault', ti5Text: 'Backup, dataprotection och återställning — planering, implementation och löpande support.',
+    ti6Title: 'Windows Server', ti6Text: 'Design, driftsättning och förvaltning av Windows Server-miljöer. Hyper-V och virtualisering.',
+    ti7Title: 'Microsoft Azure', ti7Text: 'Molnmigrering, hybridmiljöer, Azure IaaS/PaaS. Från planering till implementation och drift.',
+    konsultCta: 'Berätta om ditt problem',
+
+    branschLabel: 'Erfarenhet från',
+    branschTitle: 'Branscher vi löst problem i',
+    branschSub: 'ExtendSim och våra konsulttjänster används av organisationer i hela Norden.',
+    b1: 'Tillverkning', b2: 'Logistik', b3: 'Sjukvård', b4: 'Processindustri', b5: 'Forskning & utbildning', b6: 'Energi & kraft',
+
+    ctaTitle: 'Vi har löst liknande problem förut.',
+    ctaSub: 'Berätta om din utmaning — vi berättar hur vi kan hjälpa. Utan krångel.',
+    ctaBtn1: 'Berätta om ditt problem', ctaBtn2: 'Utforska ExtendSim',
+
+    omLabel: 'Om Duke Systems', omTitle: 'Sedan 1988 — och vi är fortfarande kvar',
+    omText1: 'Duke Systems AB grundades och började distribuera ExtendSim i Skandinavien 1988. Det gör oss till en av de mest erfarna distributörerna av simuleringsprogramvara i Norden.',
+    omText2: 'Vi arbetar inte med kortsiktiga affärer. Många av våra kundrelationer sträcker sig över decennier — och det är vi stolta över.',
+    omText3: 'Som officiell Nordic Reseller för ANDRITZ Inc. ExtendSim erbjuder vi licenser, utbildning, konsulttjänster och nu även AI-integration via MCP — allt under ett tak, på svenska.',
+    omCta: 'Kontakta oss',
+    stat1Label: 'Grundades och började distribuera ExtendSim i Skandinavien',
+    stat2Label: 'År av erfarenhet av simulering och IT i Norden',
+    stat3Label: 'Nordiska länder — officiell Nordic Reseller',
+    stat4Label: 'Fokuserade erbjudanden: ExtendSim, MCP, Infrastruktur',
+
+    kontaktLabel: 'Kontakta oss', kontaktTitle: 'Berätta om ditt problem',
+    kontaktSub: 'Oavsett om det gäller en ExtendSim-licens, ett simuleringsprojekt, MCP-integration eller IT-infrastruktur — hör av dig.',
+    fldName: 'Namn', fldNamePh: 'Ditt namn',
+    fldEmail: 'E-post', fldEmailPh: 'din@email.se',
+    fldArende: 'Ärende', fldOpt0: 'Välj ärende...',
+    fldOpt1: 'ExtendSim — licens och offert', fldOpt2: 'SimulationsMCP — demo och integration',
+    fldOpt3: 'Simuleringskonsult', fldOpt4: 'IT-infrastruktur (Commvault / Azure / Windows Server)',
+    fldOpt5: 'Utbildning i ExtendSim', fldOpt6: 'Annat',
+    fldMsg: 'Beskriv ditt problem eller din fråga', fldMsgPh: 'Berätta gärna lite om din organisation och vad du vill uppnå...',
+    gdprText: 'Jag godkänner att Duke Systems AB lagrar mina uppgifter för att hantera denna förfrågan.',
+    gdprLink: 'Läs sekretesspolicyn', sendBtn: 'Skicka meddelande',
+
+    footerSub: 'Nordisk distributör · Sedan 1988',
+    footerTagline: 'Vi löser problemet. Sedan 1988. Officiell Nordic Reseller för ExtendSim från ANDRITZ Inc.',
+    fColProd: 'Produkter', fColTjänster: 'Tjänster', fColKontakt: 'Kontakt',
+    fKonsult: 'Simuleringskonsult', fModell: 'Modellbyggnad', fUtb: 'Utbildning', fInfra: 'IT-infrastruktur',
+    fOmOss: 'Om Duke Systems', fKontaktForm: 'Kontaktformulär', fPolicy: 'Sekretesspolicy',
+    copyright: '© 2025 Duke Systems AB · Alla rättigheter förbehållna',
+    policyLabel: 'Sekretesspolicy', policyTitle: 'Hur vi hanterar dina uppgifter',
+    policyP1: 'Duke Systems AB samlar in personuppgifter (namn, e-postadress) enbart när du kontaktar oss via formuläret på denna webbplats. Uppgifterna används uteslutande för att besvara din förfrågan.',
+    policyP2: 'Vi delar inte dina uppgifter med tredje part och lagrar dem inte längre än nödvändigt. Du har rätt att begära utdrag, rättelse eller radering av dina uppgifter genom att kontakta oss på info@duke.se.',
+    policyP3: 'Webbplatsen använder Google Fonts för typografi. Inga spårnings- eller analyticscookies används.',
+  },
+  en: {
+    navConsult: 'Consulting', navAbout: 'About', navContact: 'Contact',
+    navCta: 'Contact us', mcpBadge: 'NEW',
+    mobileConsult: 'Consulting Services', mobileAbout: 'About us', mobileContact: 'Contact us',
+
+    heroEyebrow: 'Nordic distributor of ExtendSim',
+    heroTitle: 'We solve<br><em>the problem.</em><br>Since 1988.',
+    heroSub: 'Duke Systems has helped Nordic companies simulate, optimize and operate since 1988. We don\'t sell products — we solve problems. And then we stay.',
+    heroCta1: 'Explore our offering', heroCta2: 'Tell us your problem',
+    simLabel: 'ExtendSim · Simulation Model',
+
+    servLabel: 'What we offer',
+    servTitle: 'Three offerings — one focus',
+    servSub: 'Whether you need to simulate a production facility, integrate AI with your models, or strengthen your IT infrastructure — we\'ve solved it before.',
+    card1Title: 'ExtendSim', card1Text: 'Nordic distributor of ExtendSim since 1988. Software for discrete event, continuous and rate-based simulation — from ANDRITZ Inc.', card1Link: 'Explore ExtendSim →',
+    card2Title: 'SimulationsMCP', card2Text: 'Connect your AI assistants directly to ExtendSim via Model Context Protocol. Control and query your simulation models using natural language.', card2Link: 'Read about MCP integration →',
+    card3Title: 'Consulting Services', card3Text: 'Simulation consulting and IT infrastructure. We build models, train teams and manage your infrastructure with Commvault, Azure and Windows Server.', card3Link: 'See consulting services →',
+
+    varforLabel: 'Why Duke Systems',
+    varforTitle: 'Problem-solving is our core competence',
+    varforSub: 'We\'ve seen most problems before. That\'s our strength.',
+    p1Title: 'Years of experience', p1Sub: 'Founded and began distributing ExtendSim in Scandinavia in 1988.',
+    p2Title: 'Focused offerings', p2Sub: 'ExtendSim, MCP integration and IT infrastructure. Nothing more, nothing less.',
+    p3Title: 'Long-term partnership', p3Sub: 'Many of our client relationships span decades. We stay.',
+    p4Title: 'Nordic coverage', p4Sub: 'Official Nordic Reseller for ANDRITZ Inc. ExtendSim — Sweden, Norway, Denmark, Finland.',
+
+    extLabel: 'Simulation software',
+    extTitle: 'ExtendSim — powerful simulation for real problems',
+    extBadge: 'Distributed by ANDRITZ Inc. · Nordic Reseller: Duke Systems AB',
+    extText1: 'ExtendSim is a complete tool for modelling and analysing complex systems — from a simple process to an entire production facility.',
+    extText2: 'We have distributed ExtendSim in the Nordics since 1988, offering licences, training and support.',
+    extCta1: 'Request a quote', extCta2: 'extendsim.com →',
+    licTitle: 'Licence models',
+    lic1Title: 'Standalone', lic1Text: 'One licence per user and computer. Right to install on a laptop or home computer, provided they are not used simultaneously.',
+    lic2Title: 'Network licence (Concurrent)', lic2Text: 'A set number of simultaneous users in a network environment. Cost-effective for teams with varying simulation needs.',
+
+    mcpLabel: 'AI integration',
+    mcpTitle: 'ExtendSim meets AI — <span>control your simulation with natural language</span>',
+    mcpSub: 'Duke Systems offers SimulationsMCP: an integration based on Model Context Protocol that lets AI assistants communicate directly with your simulation models.',
+    ovTitle: 'ExtendSim meets AI — <span style="color:var(--teal);">three tools, one connected chain</span>',
+    ovSub: 'Describe your problem in natural language: <strong style="color:#fff;font-weight:600;">SimulationsMCP Build</strong> builds the blocks, <strong style="color:#fff;font-weight:600;">SimulationsMCP</strong> runs the model, and <strong style="color:#fff;font-weight:600;">ExtendMQTT</strong> connects the simulation to reality in real time.',
+    fn1Title: 'AI assistant', fn1Sub: 'Claude, ChatGPT<br>or Copilot',
+    fn2Title: 'SimulationsMCP', fn2Sub: 'Duke Systems<br>MCP server',
+    fn3Title: 'Your model', fn3Sub: 'ExtendSim<br>simulation',
+    compatLabel: 'Compatible AI assistants', compatReq: 'Requires ExtendSim licence',
+    mcpCta: 'Book a demo',
+
+    konsultLabel: 'Consulting Services',
+    konsultTitle: 'We solve problems — not just sell products',
+    konsultSub: 'Two tracks: simulation consulting and IT infrastructure. Both with extensive experience and a long-term perspective.',
+    track1Title: '📐 Simulation Consulting', track1Sub: 'From model building to analysis and training — using ExtendSim as the tool.',
+    ti1Title: 'Model building', ti1Text: 'We create simulation models of your production facility, logistics flow or process in ExtendSim.',
+    ti2Title: 'Analysis & optimisation', ti2Text: 'Scenario analysis, bottleneck identification and capacity planning based on your actual data.',
+    ti3Title: 'Training', ti3Text: 'Basic and advanced courses in ExtendSim. Tailored to your organisation.',
+    ti4Title: 'MCP implementation', ti4Text: 'We help you set up SimulationsMCP — the full chain from installation to first AI query.',
+    track2Title: '🖥️ IT Infrastructure', track2Sub: 'Extensive experience building and managing IT environments for Nordic organisations.',
+    ti5Title: 'Commvault', ti5Text: 'Backup, data protection and recovery — planning, implementation and ongoing support.',
+    ti6Title: 'Windows Server', ti6Text: 'Design, deployment and management of Windows Server environments. Hyper-V and virtualisation.',
+    ti7Title: 'Microsoft Azure', ti7Text: 'Cloud migration, hybrid environments, Azure IaaS/PaaS. From planning to implementation and operations.',
+    konsultCta: 'Tell us your problem',
+
+    branschLabel: 'Experience from',
+    branschTitle: 'Industries we\'ve solved problems in',
+    branschSub: 'ExtendSim and our consulting services are used by organisations across the Nordics.',
+    b1: 'Manufacturing', b2: 'Logistics', b3: 'Healthcare', b4: 'Process industry', b5: 'Research & education', b6: 'Energy & power',
+
+    ctaTitle: 'We\'ve solved similar problems before.',
+    ctaSub: 'Tell us your challenge — we\'ll tell you how we can help. No fuss.',
+    ctaBtn1: 'Tell us your problem', ctaBtn2: 'Explore ExtendSim',
+
+    omLabel: 'About Duke Systems', omTitle: 'Since 1988 — and we\'re still here',
+    omText1: 'Duke Systems AB was founded and began distributing ExtendSim in Scandinavia in 1988, making us one of the most experienced simulation software distributors in the Nordics.',
+    omText2: 'We don\'t work with short-term deals. Many of our client relationships span decades — and we\'re proud of that.',
+    omText3: 'As the official Nordic Reseller for ANDRITZ Inc. ExtendSim, we offer licences, training, consulting and AI integration via MCP — all under one roof.',
+    omCta: 'Contact us',
+    stat1Label: 'Founded and began distributing ExtendSim in Scandinavia',
+    stat2Label: 'Years of experience in simulation and IT across the Nordics',
+    stat3Label: 'Nordic countries — official Nordic Reseller',
+    stat4Label: 'Focused offerings: ExtendSim, MCP, Infrastructure',
+
+    kontaktLabel: 'Contact us', kontaktTitle: 'Tell us your problem',
+    kontaktSub: 'Whether it\'s an ExtendSim licence, a simulation project, MCP integration or IT infrastructure — get in touch.',
+    fldName: 'Name', fldNamePh: 'Your name',
+    fldEmail: 'Email', fldEmailPh: 'your@email.com',
+    fldArende: 'Subject', fldOpt0: 'Select subject...',
+    fldOpt1: 'ExtendSim — licence and quote', fldOpt2: 'SimulationsMCP — demo and integration',
+    fldOpt3: 'Simulation consulting', fldOpt4: 'IT infrastructure (Commvault / Azure / Windows Server)',
+    fldOpt5: 'ExtendSim training', fldOpt6: 'Other',
+    fldMsg: 'Describe your problem or question', fldMsgPh: 'Tell us a bit about your organisation and what you want to achieve...',
+    gdprText: 'I consent to Duke Systems AB storing my details to handle this enquiry.',
+    gdprLink: 'Read the privacy policy', sendBtn: 'Send message',
+
+    footerSub: 'Nordic distributor · Since 1988',
+    footerTagline: 'We solve the problem. Since 1988. Official Nordic Reseller for ExtendSim from ANDRITZ Inc.',
+    fColProd: 'Products', fColTjänster: 'Services', fColKontakt: 'Contact',
+    fKonsult: 'Simulation consulting', fModell: 'Model building', fUtb: 'Training', fInfra: 'IT infrastructure',
+    fOmOss: 'About Duke Systems', fKontaktForm: 'Contact form', fPolicy: 'Privacy policy',
+    copyright: '© 2025 Duke Systems AB · All rights reserved',
+    policyLabel: 'Privacy Policy', policyTitle: 'How we handle your data',
+    policyP1: 'Duke Systems AB collects personal data (name, email address) only when you contact us via the form on this website. The data is used solely to respond to your enquiry.',
+    policyP2: 'We do not share your data with third parties and do not store it longer than necessary. You have the right to request access, correction or deletion of your data by contacting us at info@duke.se.',
+    policyP3: 'This website uses Google Fonts for typography. No tracking or analytics cookies are used.',
+  }
+};
+
+let currentLang = 'sv';
+
+function toggleLang() {
+  currentLang = currentLang === 'sv' ? 'en' : 'sv';
+  applyLang(currentLang);
+  document.getElementById('langToggle').className = 'lang-toggle ' + currentLang;
+  document.documentElement.lang = currentLang;
+}
+
+function t(id) {
+  return translations[currentLang][id] || translations['sv'][id] || '';
+}
+
+function setText(id, html) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = html;
+}
+function setAttr(id, attr, val) {
+  const el = document.getElementById(id);
+  if (el) el[attr] = val;
+}
+
+function applyLang(lang) {
+  const L = translations[lang];
+
+  // Nav
+  document.querySelectorAll('[data-sv]').forEach(el => {
+    el.textContent = L[el.dataset.sv === 'NY' ? 'mcpBadge' : el.dataset.sv] || el.dataset[lang] || el.dataset.sv;
+  });
+  document.querySelectorAll('.nav-links a[data-sv]').forEach(el => {
+    const key = 'nav' + el.dataset.sv.replace(' ', '');
+    if (L[key]) el.childNodes[0].textContent = L[key] + ' ';
+  });
+  setText('navCta', L.navCta); setText('mcpTagMobile', L.mcpBadge);
+  setText('mobileKonsult', L.mobileConsult); setText('mobileOmOss', L.mobileAbout); setText('mobileKontakt', L.mobileContact);
+
+  // Hero
+  setText('heroEyebrow', L.heroEyebrow); setText('heroTitle', L.heroTitle);
+  setText('heroSub', L.heroSub); setText('heroCta1', L.heroCta1); setText('heroCta2', L.heroCta2);
+  setText('simLabel', L.simLabel);
+
+  // Services
+  setText('servLabel', L.servLabel); setText('servTitle', L.servTitle); setText('servSub', L.servSub);
+  setText('card1Title', L.card1Title); setText('card1Text', L.card1Text); setText('card1Link', L.card1Link);
+  setText('card2Title', L.card2Title); setText('card2Text', L.card2Text); setText('card2Link', L.card2Link);
+  setText('card3Title', L.card3Title); setText('card3Text', L.card3Text); setText('card3Link', L.card3Link);
+
+  // Varför
+  setText('varforLabel', L.varforLabel); setText('varforTitle', L.varforTitle); setText('varforSub', L.varforSub);
+  setText('p1Title', L.p1Title); setText('p1Sub', L.p1Sub);
+  setText('p2Title', L.p2Title); setText('p2Sub', L.p2Sub);
+  setText('p3Title', L.p3Title); setText('p3Sub', L.p3Sub);
+  setText('p4Title', L.p4Title); setText('p4Sub', L.p4Sub);
+
+  // ExtendSim
+  setText('extLabel', L.extLabel); setText('extTitle', L.extTitle); setText('extBadge', L.extBadge);
+  setText('extText1', L.extText1); setText('extText2', L.extText2);
+  setText('extCta1', L.extCta1); setText('extCta2', L.extCta2);
+  setText('licTitle', L.licTitle);
+  setText('lic1Title', L.lic1Title); setText('lic1Text', L.lic1Text);
+  setText('lic2Title', L.lic2Title); setText('lic2Text', L.lic2Text);
+
+  // MCP
+  setText('mcpLabel', L.mcpLabel); setText('mcpTitle', L.mcpTitle); setText('mcpSub', L.mcpSub);
+  setText('ovTitle', L.ovTitle); setText('ovSub', L.ovSub);
+  setText('fn1Title', L.fn1Title); setText('fn1Sub', L.fn1Sub);
+  setText('fn2Title', L.fn2Title); setText('fn2Sub', L.fn2Sub);
+  setText('fn3Title', L.fn3Title); setText('fn3Sub', L.fn3Sub);
+  setText('compatLabel', L.compatLabel); setText('compatReq', L.compatReq); setText('mcpCta', L.mcpCta);
+
+  // Konsult
+  setText('konsultLabel', L.konsultLabel); setText('konsultTitle', L.konsultTitle); setText('konsultSub', L.konsultSub);
+  setText('track1Title', L.track1Title); setText('track1Sub', L.track1Sub);
+  setText('ti1Title', L.ti1Title); setText('ti1Text', L.ti1Text);
+  setText('ti2Title', L.ti2Title); setText('ti2Text', L.ti2Text);
+  setText('ti3Title', L.ti3Title); setText('ti3Text', L.ti3Text);
+  setText('ti4Title', L.ti4Title); setText('ti4Text', L.ti4Text);
+  setText('track2Title', L.track2Title); setText('track2Sub', L.track2Sub);
+  setText('ti5Title', L.ti5Title); setText('ti5Text', L.ti5Text);
+  setText('ti6Title', L.ti6Title); setText('ti6Text', L.ti6Text);
+  setText('ti7Title', L.ti7Title); setText('ti7Text', L.ti7Text);
+  setText('konsultCta', L.konsultCta);
+
+  // Branscher
+  setText('branschLabel', L.branschLabel); setText('branschTitle', L.branschTitle); setText('branschSub', L.branschSub);
+  setText('b1', L.b1); setText('b2', L.b2); setText('b3', L.b3);
+  setText('b4', L.b4); setText('b5', L.b5); setText('b6', L.b6);
+
+  // CTA banner
+  setText('ctaTitle', L.ctaTitle); setText('ctaSub', L.ctaSub);
+  setText('ctaBtn1', L.ctaBtn1); setText('ctaBtn2', L.ctaBtn2);
+
+  // Om oss
+  setText('omLabel', L.omLabel); setText('omTitle', L.omTitle);
+  setText('omText1', L.omText1); setText('omText2', L.omText2); setText('omText3', L.omText3);
+  setText('omCta', L.omCta);
+  setText('stat1Label', L.stat1Label); setText('stat2Label', L.stat2Label);
+  setText('stat3Label', L.stat3Label); setText('stat4Label', L.stat4Label);
+
+  // Kontakt
+  setText('kontaktLabel', L.kontaktLabel); setText('kontaktTitle', L.kontaktTitle); setText('kontaktSub', L.kontaktSub);
+  const nameLabel = document.getElementById('nameLabel'); if (nameLabel) nameLabel.textContent = L.fldName;
+  const emailLabel = document.getElementById('emailLabel'); if (emailLabel) emailLabel.textContent = L.fldEmail;
+  const nameInput = document.getElementById('name'); if (nameInput) nameInput.placeholder = L.fldNamePh;
+  const emailInput = document.getElementById('email'); if (emailInput) emailInput.placeholder = L.fldEmailPh;
+  const arendeLabel = document.getElementById('arendeLabel'); if (arendeLabel) arendeLabel.textContent = L.fldArende;
+  const opts = document.querySelectorAll('#arende option');
+  if (opts.length >= 7) {
+    opts[0].textContent = L.fldOpt0; opts[1].textContent = L.fldOpt1; opts[2].textContent = L.fldOpt2;
+    opts[3].textContent = L.fldOpt3; opts[4].textContent = L.fldOpt4; opts[5].textContent = L.fldOpt5; opts[6].textContent = L.fldOpt6;
+  }
+  const msgLabel = document.getElementById('msgLabel'); if (msgLabel) msgLabel.textContent = L.fldMsg;
+  const msgInput = document.getElementById('meddelande'); if (msgInput) msgInput.placeholder = L.fldMsgPh;
+  setText('gdprText', L.gdprText + ' <a href="index.html#">' + L.gdprLink + '</a>.');
+  setText('sendBtn', L.sendBtn);
+
+  // Footer
+  setText('footerSub', L.footerSub); setText('footerTagline', L.footerTagline);
+  setText('fColProd', L.fColProd); setText('fColTjanster', L.fColTjänster); setText('fColKontakt', L.fColKontakt);
+  setText('fKonsult', L.fKonsult); setText('fModell', L.fModell); setText('fUtb', L.fUtb); setText('fInfra', L.fInfra);
+  setText('fOmOss', L.fOmOss); setText('fKontaktForm', L.fKontaktForm); setText('fPolicy', L.fPolicy);
+  setText('copyright', L.copyright);
+  setText('policyLabel', L.policyLabel); setText('policyTitle', L.policyTitle);
+  setText('policyP1', L.policyP1); setText('policyP2', L.policyP2); setText('policyP3', L.policyP3);
+}
+
+// Init toggle state
+document.getElementById('langToggle').className = 'lang-toggle sv';
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#' + current
+      ? 'rgba(255,255,255,1)' : '';
+  });
+});
+</script>
+</body>
+</html>
