@@ -183,3 +183,10 @@ Skapa en tom sidmall eller använd ett plugin som "Insert HTML Snippet" / en Cus
 ---
 
 *Skapad som handoff-kontext för fortsatt arbete. Sidan är i körbart skick — detta dokument beskriver nuläget, designbesluten och vad som återstår.*
+
+## Ingest-arbetsflöde (2026-09-23)
+
+Nya sidor läggs som ren HTML i `ingest/` och importeras med `/ingest` i Claude Code. Flödet klär på sidan med
+sajtens design (komponenter i `mall/komponenter.md`), översätter till engelska, placerar den i `site/`, länkar in den
+och verifierar i webbläsare. Användaren godkänner en plan innan något byggs och inget committas automatiskt.
+Deploy-katalogen är `site/`. Spec: `docs/superpowers/specs/2026-09-23-ingest-arbetsflode-design.md`.

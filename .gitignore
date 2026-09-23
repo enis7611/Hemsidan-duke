@@ -14,3 +14,4 @@ Desktop.ini
 # Playwright/MCP-artefakter
 .playwright-mcp/
 *.tmp
+__pycache__/

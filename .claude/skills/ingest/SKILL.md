@@ -81,6 +81,7 @@ Uppdatering: `--fran` utelämnas om sidan inte länkas från `index.html`.
 
 - Lyckade filer: flytta originalet (och dess bilder) till `ingest/_importerat/<ÅÅÅÅ-MM-DD>/` och behåll den relativa undermappen.
   Använd `git mv` om filen är spårad, annars vanlig flytt.
+  Finns filen redan i arkivet (samma fil importerad två gånger samma dag): lägg till `-2`, `-3` … före `.html`. Skriv aldrig över ett arkiverat original.
 - Misslyckade eller överhoppade filer ligger kvar i `ingest/`.
 - Rapportera:
   - per fil: resultat (klar / misslyckad / överhoppad), målfil, inlänkning, varningar

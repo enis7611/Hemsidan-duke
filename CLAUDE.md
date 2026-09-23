@@ -4,19 +4,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-The marketing website for **Duke Systems AB** (duke.se) — a Nordic ExtendSim distributor. It is a single static **one-page site** with no build system, no tests, no frameworks, and no backend. The entire site (HTML + CSS + JS) lives inline in one file: `src/index.html` (~2400 lines).
+The marketing website for **Duke Systems AB** (duke.se) — a Nordic ExtendSim distributor. It is a static site with no frameworks and no backend. The live site is in **`site/`** (the deploy directory): `index.html` (one-pager) plus product/industry subpages. Each page is a single self-contained file with inline CSS + JS. `src/index.html` and `src/variants/` are historical and not deployed.
 
 The site content is in **Swedish** (with a runtime English toggle). Project docs are also Swedish. `docs/HANDOFF_CONTEXT.md` is the authoritative project brief — read it before making content or design changes.
 
 ## Running / previewing
 
-No build step. Open `src/index.html` directly in a browser, or serve the folder:
+Open `site/index.html` directly in a browser, or serve the folder:
 
 ```powershell
-python -m http.server 8000   # then open http://localhost:8000/src/index.html
+python -m http.server 8000   # then open http://localhost:8000/site/index.html
 ```
 
-There is no lint or test command. "Testing" is the manual sanity checklist in `docs/HANDOFF_CONTEXT.md` §10 (toggle SV/EN, scroll-reveal, submit form, mobile hamburger, nav anchors).
+Beyond the subpage tooling below there is no lint or test command. Manual testing is the sanity checklist in `docs/HANDOFF_CONTEXT.md` §10 (toggle SV/EN, scroll-reveal, submit form, mobile hamburger, nav anchors).
 
 ## Architecture & conventions that span the file
 
@@ -35,6 +35,23 @@ A missing `setText` silently blanks the element on toggle — always test the SV
 **Sections** are anchor-linked `<section id="...">` blocks (`#hero`, `#tjanster`, `#varfor`, `#extendsim`, `#mcp`, `#konsult`, `#branscher`, `#cta-banner`, `#om-oss`, `#kontakt`, `#sekretesspolicy`). Nav links and the mobile menu point at these ids. Animations are scroll-reveal via `IntersectionObserver` on `.reveal` elements.
 
 **Responsive breakpoints:** `768px` (mobile / hamburger), `1024px` (grid), `480px` (small screens).
+
+## Subpages, template and ingest
+
+Subpages in `site/` (all except `index.html`) are **generated** — never edit them directly:
+- Source: `mall/innehall/<name>.html` (metadata comment + page content).
+- Build: `pwsh -File mall/bygg-sida.ps1 -Innehall mall/innehall/<name>.html` → `mall/prefix.html` + content + `mall/suffix.html`.
+- Verify: `python mall/verifiera.py <name>.html --fran index.html` (Playwright: JS errors, SV/EN, links, mobile menu, screenshots with `--skarmdumpar`).
+- Tests: `pwsh -File mall/test/test-bygg-sida.ps1` and `python mall/test/test_verifiera.py`.
+- Components for dressing up content: `mall/komponenter.md`.
+
+On subpages, bilingual text uses `data-sv`/`data-en` on **leaf elements** (`applyLang()` sets `textContent`, which wipes inner markup such as `<br>` or `<strong>`).
+
+**Ingest:** raw HTML pages dropped in `ingest/` are imported with the `/ingest` skill (`.claude/skills/ingest/SKILL.md`): analyse → plan for approval → build → verify → archive to `ingest/_importerat/`. Never commits automatically.
+
+Changing shared head/header/footer: edit `mall/prefix.html` / `mall/suffix.html`, rebuild every file in `mall/innehall/`, and mirror the change in `site/index.html` by hand.
+
+`.gitattributes` forces LF: the build writes LF and the round-trip test is byte-exact.
 
 ## Content guardrails (from HANDOFF §1 — do not violate)
 
