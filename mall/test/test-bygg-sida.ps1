@@ -74,5 +74,14 @@ Kastar { & $bygg -Innehall $p -Ut $ut } "ostängd metadata avvisas"
 try { & $bygg -Innehall (Join-Path $tmp 'finns-inte.html') -Ut $ut | Out-Null; Ok $false "saknad fil avvisas (inget fel kastades)" }
 catch { Ok ($_.Exception.Message -like '*finns inte*') "saknad fil ger felet 'finns inte' [$($_.Exception.Message)]" }
 
+# 9. Mojibake (felkodad råfil som redan hamnat i innehållsfilen) avvisas
+$p = Skriv 'mojibake.html' ($giltig.Replace('Hej', ('Hej p' + [char]0xC3 + [char]0xA5 + ' dig')))
+Kastar { & $bygg -Innehall $p -Ut $ut } "mojibake (Ã¥ för å) avvisas"
+$p = Skriv 'ersattning.html' ($giltig.Replace('Hej', ('Hej p' + [char]0xFFFD)))
+Kastar { & $bygg -Innehall $p -Ut $ut } "ersättningstecken (U+FFFD) avvisas"
+$p = Skriv 'svenska.html' ($giltig.Replace('Hej', 'Hej på dig – ÅÄÖ åäö é ü'))
+& $bygg -Innehall $p -Ut $ut | Out-Null
+Ok (Test-Path (Join-Path $ut 'svenska.html')) "vanlig svenska med å/ä/ö/é/ü godkänns"
+
 Remove-Item -Recurse -Force $tmp
 if ($script:fel) { Write-Host "$($script:fel) test fallerade" -ForegroundColor Red; exit 1 } else { Write-Host "Alla test OK"; exit 0 }

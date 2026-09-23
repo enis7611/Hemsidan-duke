@@ -77,6 +77,16 @@ python mall/verifiera.py <namn>.html --fran index.html --skarmdumpar <scratchpad
 
 Uppdatering: `--fran` utelämnas om sidan inte länkas från `index.html`.
 
+**Om `site/index.html` ändrades i steg 4** (inlänkning): verifiera även startsidan och jämför med läget före ändringen:
+
+```
+F=<scratchpad>/index-fore && mkdir -p $F && cp site/*.html $F/ && git show HEAD:site/index.html > $F/index.html
+python mall/verifiera.py index.html --rot $F     # före
+python mall/verifiera.py index.html              # efter
+```
+
+Den nya körningen får inte ha fler `FEL:`-rader än den gamla. Kända, redan befintliga fel (t.ex. `<br>` i `data-sv`) är okej. Nya fel rättas i `index.html` innan du går vidare.
+
 ## Steg 6: Städa och rapportera
 
 - Lyckade filer: flytta originalet (och dess bilder) till `ingest/_importerat/<ÅÅÅÅ-MM-DD>/` och behåll den relativa undermappen.

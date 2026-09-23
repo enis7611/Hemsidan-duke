@@ -24,6 +24,10 @@ if ($namn -eq 'index.html') { throw 'index.html är handredigerad och byggs aldr
 if ($namn -cnotmatch '^[a-z0-9-]+\.html$') { throw "Otillåtet filnamn '$namn': bara a-z, 0-9 och bindestreck (å/ä/ö → a/a/o)" }
 
 $raw = Las-Lf $Innehall
+# Felkodade tecken från en råfil som inte var UTF-8: ersättningstecken, eller UTF-8 läst som Windows-1252 (å → Ã¥).
+if ($raw -cmatch '\uFFFD|\u00C3[\u0080-\u00BF]|\u00C2[\u00A0-\u00BF]') {
+  throw "Innehållsfilen har felkodade tecken ('$($Matches[0])'). Råfilen var troligen inte UTF-8, så rätta å/ä/ö: $Innehall"
+}
 if (-not $raw.StartsWith("<!--`n")) { throw "Innehållsfilen saknar metadata-kommentar överst: $Innehall" }
 $slut = $raw.IndexOf("`n-->`n")
 if ($slut -lt 0) { throw "Metadata-kommentaren stängs inte med en egen rad '-->': $Innehall" }
