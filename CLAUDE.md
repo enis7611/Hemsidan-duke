@@ -49,6 +49,10 @@ On subpages, bilingual text uses `data-sv`/`data-en` on **leaf elements** (`appl
 
 **Ingest:** raw HTML pages dropped in `ingest/` are imported with the `/ingest` skill (`.claude/skills/ingest/SKILL.md`): analyse → plan for approval → build → verify → archive to `ingest/_importerat/`. Never commits automatically.
 
+**Deliveries:** when `ingest/urls.json` exists, `/ingest` runs the delivery flow via `python mall/leverans.py plan|bygg|kontrollera|arkivera`. `urls.json` is the answer key. Non-HTML files (e.g. `simulationsmcp/v1/modeling_guides.json`, fetched byte-for-byte by installed SimulationsMCP servers) are copied verbatim and hash-checked against `UPLOAD.txt`. Generator guide pages (`<main class="guide-content">`) are converted by `mall/guider.py` and published under `/simulationsmcp/v1/guides/` (`mall/adressregler.json` rewrites `/guides/`), English-only content, `noindex`, never linked from the rest of the site, and blocked in `site/robots.txt`. Never hand-edit generated guide pages. Tests: `python mall/test/test_guider.py`, `python mall/test/test_leverans.py`.
+
+`site/` now has subdirectories: `bygg-sida.ps1` derives the output path from the content file's path under `mall/innehall/` (or `-Sokvag`), and `{{ROOT}}` makes header/footer links work at any depth.
+
 Changing shared head/header/footer: edit `mall/prefix.html` / `mall/suffix.html`, rebuild every file in `mall/innehall/`, and mirror the change in `site/index.html` by hand.
 
 `.gitattributes` forces LF: the build writes LF and the round-trip test is byte-exact.

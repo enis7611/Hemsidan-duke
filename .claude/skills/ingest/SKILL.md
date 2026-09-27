@@ -10,6 +10,41 @@ Råa HTML-filer i `ingest/` blir färdiga, tvåspråkiga undersidor i `site/`. F
 
 Läs först: `mall/komponenter.md` (komponenter K1–K12 och regler) och HANDOFF §1 (`docs/HANDOFF_CONTEXT.md`).
 
+## Leverans eller lösa sidor?
+
+**Finns `ingest/urls.json` är det en leverans.** Följ "Leveransflöde" nedan och hoppa över steg 1–6.
+Annars: lösa sidor, steg 1–6.
+
+## Leveransflöde
+
+En leverans = `UPLOAD.txt` + `urls.json` (styrfiler, publiceras aldrig) + material. `urls.json` är facit.
+Adresser skrivs om enligt `mall/adressregler.json` (`/guides/` → `/simulationsmcp/v1/guides/`).
+Spec: `docs/superpowers/specs/2026-09-26-ingest-leveranser-design.md`.
+
+1. **Plan:** `PYTHONIOENCODING=utf-8 python mall/leverans.py plan`
+   - Läs även `ingest/UPLOAD.txt` själv och notera sådant som skriptet inte tolkar (nya krav, deadlines).
+   - Visa användaren: planens utskrift (version, MUST-filer med kontrollsumma, antal nya/ändrade/oförändrade per spår, adressregel, saknade/överblivna, varningar) + egna noteringar.
+   - **STOPP** vid rader under "STOPP". Förklara och bygg inte.
+   - Fråga: **"Ja för att bygga?"** Vänta på svar.
+2. **Bygg:** `PYTHONIOENCODING=utf-8 python mall/leverans.py bygg`
+   - Listas "Vanliga sidor att hantera med omdöme": gör steg 2–5 nedan för just dem. Bygg med `pwsh -File mall/bygg-sida.ps1 -Innehall mall/innehall/<mål> -Sokvag <mål>`.
+3. **Kontrollera:** `PYTHONIOENCODING=utf-8 python mall/leverans.py kontrollera`
+   - Ska ge `OK`.
+   - Vid `FEL:`: rätta orsaken (i `mall/guider.py` om konverteringen är fel, aldrig för hand i `site/`) och kör 2–3 igen.
+4. **Titta:** ta skärmdumpar av guidestartsidan, en kategorisida och en ändrad eller ny guide:
+   `python mall/verifiera.py <mål> --sprak en --skarmdumpar <scratchpad>/ingest-dumpar`.
+   Öppna SV desktop och EN mobil med Read-verktyget.
+5. **Arkivera:** `python mall/leverans.py arkivera` flyttar hela leveransen, inklusive styrfilerna, till `ingest/_importerat/<datum>[-n]/`.
+6. **Rapportera:**
+   - byggda filer per spår
+   - varningar
+   - skärmdumpar
+   - **deploy-noterna** som `kontrollera` skrev ut (binär uppladdning, MUST före serverrelease, `curl`-kontroller, krockrisken `simulationsmcp.html` ↔ `simulationsmcp/`)
+   - Avsluta med: "Inget är committat. Titta i `site/` och säg till när jag ska committa."
+
+Guidesidor ändras aldrig för hand i `site/` eller `mall/innehall/`. De genereras av `mall/guider.py` vid varje leverans.
+Om `guider.py` stannar med "okänd sektion" har generatorn ändrats. Visa felet för användaren och föreslå en mappning i `guider.py`.
+
 ## Steg 1: Inventera
 
 Lista alla `*.html` rekursivt i `ingest/`, utom under `ingest/_importerat/`. Är listan tom: säg "Inkorgen är tom" och avsluta.

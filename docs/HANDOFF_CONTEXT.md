@@ -190,3 +190,11 @@ Nya sidor läggs som ren HTML i `ingest/` och importeras med `/ingest` i Claude 
 sajtens design (komponenter i `mall/komponenter.md`), översätter till engelska, placerar den i `site/`, länkar in den
 och verifierar i webbläsare. Användaren godkänner en plan innan något byggs och inget committas automatiskt.
 Deploy-katalogen är `site/`. Spec: `docs/superpowers/specs/2026-09-23-ingest-arbetsflode-design.md`.
+
+## Leveranser och SimulationsMCP-data (2026-09-26)
+
+MCP-serverns fasta basadress är `https://duke.se/simulationsmcp/v1/`. Där ligger `modeling_guides.json` och
+`guide-schema.json` (byte för byte, hämtas av installerade servrar) och modelleringsguiderna under `guides/`.
+Guiderna är dolda: inga länkar från sajten, `noindex` och `robots.txt`. Leveranser kommer som `UPLOAD.txt` + `urls.json`
++ material i `ingest/` och importeras med `/ingest`. Deploy: ladda upp hela `site/`, JSON binärt, kontrollera med `curl`
+att adressen ger 200 utan omdirigering. Spec: `docs/superpowers/specs/2026-09-26-ingest-leveranser-design.md`.

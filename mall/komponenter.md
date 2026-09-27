@@ -21,6 +21,22 @@ Alla snuttar är innehåll för `mall/innehall/<namn>.html`. Byt texterna. Behå
 - Egennamn och tekniska termer som är lika på båda språken (t.ex. `MQTT_Publish`) behöver inga data-attribut.
 - `&`, `<`, `"` i attributvärden skrivs som `&amp;`, `&lt;`, `&quot;`.
 
+## Metadata överst i innehållsfilen
+
+```
+<!--
+title: Sidans titel | Duke Systems AB
+description: En mening utan raka citattecken.
+lang: en                      (valfri; sv är standard – en = sidan startar i EN-läge)
+robots: noindex, nofollow     (valfri; ger <meta name="robots">)
+page-css:
+  .klass{…}                   (noll eller flera rader sid-CSS)
+-->
+```
+
+Raderna kommer i exakt den ordningen. `-->` står på en egen rad. Sidor i undermappar byggs med
+`pwsh -File mall/bygg-sida.ps1 -Innehall mall/innehall/<väg>/index.html` (vägen under `mall/innehall/` blir vägen i `site/`).
+
 ## Mappning: rått innehåll → komponent
 
 | Rått innehåll | Komponent |
@@ -273,6 +289,11 @@ Talare: `Du`/`You` (`.terminal-cmd`) eller `AI` (`.terminal-result`, teal prompt
   .duke-table td{padding:0.75rem 1rem;border-bottom:1px solid var(--border);color:var(--navy);vertical-align:top;}
   .duke-table tr:last-child td{border-bottom:none;}
   .duke-table-wrap{overflow-x:auto;}
+```
+
+**Sid-CSS för `<code>`** (när text innehåller kod, oavsett komponent):
+```css
+  code{font-family:var(--mono);font-size:0.88em;}
 ```
 
 ```html
