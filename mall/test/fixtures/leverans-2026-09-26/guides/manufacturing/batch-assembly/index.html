@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Batch Assembly (Two-Component)</title>
+<meta name="description" content="An assembly model where two separate component streams must be joined before the assembly operation. A Batch block holds components until one of each type is available, then combines them for processing. Models kitting, assembly, or any multi-input synchronization.">
+</head>
+<body>
+<main class="guide-content">
+  <nav class="breadcrumb"><a href="/guides/">Guides</a> / <a href="/guides/manufacturing/">Manufacturing</a></nav>
+  <h1>Batch Assembly (Two-Component)</h1>
+  <p class="summary">An assembly model where two separate component streams must be joined before the assembly operation. A Batch block holds components until one of each type is available, then combines them for processing. Models kitting, assembly, or any multi-input synchronization.</p>
+
+  <section class="use-when">
+  <h2>When to use this</h2>
+  <ul>
+    <li>Modeling an assembly operation that requires one item from each of two or more component streams</li>
+    <li>Synchronizing multiple input streams before a combined processing step</li>
+    <li>Analyzing the impact of component imbalance on assembly throughput and WIP</li>
+    <li>Modeling kitting operations where a kit of parts must be assembled before production begins</li>
+    <li>Any scenario where items from multiple sources must be matched before proceeding</li>
+  </ul>
+  </section>
+
+  <section class="blocks">
+  <h2>Blocks</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Create</td><td>Item.lbr</td><td>ComponentA</td><td>Generates component A items at the production or arrival rate for stream A</td></tr>
+      <tr><td>Create</td><td>Item.lbr</td><td>ComponentB</td><td>Generates component B items at the production or arrival rate for stream B</td></tr>
+      <tr><td>Queue</td><td>Item.lbr</td><td>BufferA</td><td>Holds component A items waiting to be matched with a component B item for batching</td></tr>
+      <tr><td>Queue</td><td>Item.lbr</td><td>BufferB</td><td>Holds component B items waiting to be matched with a component A item for batching</td></tr>
+      <tr><td>Batch</td><td>Item.lbr</td><td>Assembler</td><td>Collects one item from each connected input Queue and combines them into a single batched item for downstream processing</td></tr>
+      <tr><td>Queue</td><td>Item.lbr</td><td>AssemblyQueue</td><td>Holds batched items waiting for the assembly Activity</td></tr>
+      <tr><td>Activity</td><td>Item.lbr</td><td>Assembly</td><td>Performs the assembly operation on the combined batch item</td></tr>
+      <tr><td>Exit</td><td>Item.lbr</td><td>FinishedProduct</td><td>Collects completed assemblies and records throughput</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="connections">
+  <h2>Connections</h2>
+  <ul>
+    <li>ComponentA (ItemOut) → BufferA (ItemIn)</li>
+    <li>ComponentB (ItemOut) → BufferB (ItemIn)</li>
+    <li>BufferA (ItemOut) → Assembler (ItemIn[0])</li>
+    <li>BufferB (ItemOut) → Assembler (ItemIn[1])</li>
+    <li>Assembler (ItemOut) → AssemblyQueue (ItemIn)</li>
+    <li>AssemblyQueue (ItemOut) → Assembly (ItemIn)</li>
+    <li>Assembly (ItemOut) → FinishedProduct (ItemIn)</li>
+  </ul>
+  </section>
+
+  <section class="key-parameters">
+  <h2>Key parameters</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+    <tbody>
+      <tr><td>Batch</td><td>batchSize / batchType</td><td>batchSize=1 per input (permanent batch of N=2), batchType=permanent</td><td>For assembly, use permanent batching (components are permanently combined). batchSize typically 1 per input connector. Temporary batching groups items that will be unbatched later.</td></tr>
+      <tr><td>Create (ComponentA)</td><td>distribution / arg1</td><td>Exponential, mean=3 min</td><td>Component A arrival rate. If rate differs significantly from component B, the slower stream becomes the bottleneck and the faster stream builds up in its buffer.</td></tr>
+      <tr><td>Create (ComponentB)</td><td>distribution / arg1</td><td>Exponential, mean=3 min</td><td>Component B arrival rate. Ideally balanced with component A rate. Imbalance causes one buffer to grow without bound.</td></tr>
+      <tr><td>Batch</td><td>matchAttribute</td><td>null (no matching) or attribute name</td><td>If components must be matched by a specific attribute (e.g., serial number or order ID), set matchAttribute. Without matching, Batch combines any available item from each input.</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="common-mistakes">
+  <h2>Common mistakes</h2>
+  <ul>
+    <li>Connecting component Create blocks directly to the Batch block without Queue buffers — the Batch block needs Queue blocks on each input because it pulls from Queue outputs, not directly from Create outputs; without Queues, components cannot accumulate and Batch will stall</li>
+    <li>Setting mismatched component arrival rates and not accounting for the resulting buffer imbalance — if component A arrives twice as fast as component B, the BufferA will grow indefinitely while BufferB stays near empty; always balance mean arrival rates across all component streams</li>
+    <li>Using temporary batch mode when permanent assembly is intended — temporary batching allows items to be unbatched later (via Unbatch block), which is wrong for assembly; use permanent batch mode when components are physically combined</li>
+    <li>Expecting Batch block throughput to exceed the rate of the slowest component stream — the assembly rate is limited by min(rateA, rateB); adding more Assembly Activities downstream cannot compensate for a slow component supplier</li>
+  </ul>
+  </section>
+
+  <section class="key-metrics">
+  <h2>What to measure</h2>
+  <ul>
+    <li>Assembly throughput (limited by slower component stream)</li>
+    <li>Buffer length for each component stream (imbalance indicator)</li>
+    <li>Batch wait time (how long until matching component arrives)</li>
+    <li>Assembly Activity utilization</li>
+    <li>WIP ratio between BufferA and BufferB (large ratio indicates flow imbalance)</li>
+  </ul>
+  </section>
+
+  <section class="variations">
+  <h2>Variations</h2>
+  <ul>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+  </ul>
+  </section>
+</main>
+</body>
+</html>

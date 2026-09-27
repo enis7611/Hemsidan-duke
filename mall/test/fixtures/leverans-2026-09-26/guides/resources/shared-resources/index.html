@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shared Resources</title>
+<meta name="description" content="Multiple processes compete for a limited pool of shared resources (operators, tools, vehicles). Each process requests resources when needed, uses them during processing, and releases them for other processes to use.">
+</head>
+<body>
+<main class="guide-content">
+  <nav class="breadcrumb"><a href="/guides/">Guides</a> / <a href="/guides/resources/">Resource Management</a></nav>
+  <h1>Shared Resources</h1>
+  <p class="summary">Multiple processes compete for a limited pool of shared resources (operators, tools, vehicles). Each process requests resources when needed, uses them during processing, and releases them for other processes to use.</p>
+
+  <section class="use-when">
+  <h2>When to use this</h2>
+  <ul>
+    <li>Modeling operators, technicians, or vehicles shared across multiple production lines or service points</li>
+    <li>Analyzing resource contention and its impact on throughput and waiting time</li>
+    <li>Determining the minimum number of shared resources to achieve a target utilization or wait time</li>
+    <li>Modeling tool cribs, forklifts, or test equipment shared by multiple work centers</li>
+    <li>Any scenario where a finite pool of resources is the primary constraint on system throughput</li>
+  </ul>
+  </section>
+
+  <section class="blocks">
+  <h2>Blocks</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Create</td><td>Item.lbr</td><td>ArrivalsA</td><td>Generates items for process A that will compete for shared resources</td></tr>
+      <tr><td>Create</td><td>Item.lbr</td><td>ArrivalsB</td><td>Generates items for process B that will also compete for the same shared resource pool</td></tr>
+      <tr><td>Queue</td><td>Item.lbr</td><td>QueueA</td><td>Holds process A items waiting for resource availability; wait time reflects resource contention</td></tr>
+      <tr><td>Queue</td><td>Item.lbr</td><td>QueueB</td><td>Holds process B items waiting for resource availability from the same pool</td></tr>
+      <tr><td>Activity</td><td>Item.lbr</td><td>ProcessA</td><td>Process A activity; requests and holds resources from the Resource Pool during processing</td></tr>
+      <tr><td>Activity</td><td>Item.lbr</td><td>ProcessB</td><td>Process B activity; competes with Process A for resources from the same Resource Pool</td></tr>
+      <tr><td>Resource Pool</td><td>Item.lbr</td><td>SharedPool</td><td>Defines the total number of available shared resources; Activity blocks request from and release to this pool</td></tr>
+      <tr><td>Exit</td><td>Item.lbr</td><td>CompletedA</td><td>Collects completed process A items</td></tr>
+      <tr><td>Exit</td><td>Item.lbr</td><td>CompletedB</td><td>Collects completed process B items</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="connections">
+  <h2>Connections</h2>
+  <ul>
+    <li>ArrivalsA (ItemOut) → QueueA (ItemIn)</li>
+    <li>QueueA (ItemOut) → ProcessA (ItemIn)</li>
+    <li>ProcessA (ItemOut) → CompletedA (ItemIn)</li>
+    <li>ArrivalsB (ItemOut) → QueueB (ItemIn)</li>
+    <li>QueueB (ItemOut) → ProcessB (ItemIn)</li>
+    <li>ProcessB (ItemOut) → CompletedB (ItemIn)</li>
+    <li>SharedPool (Resource) → QueueA (Resource request)</li>
+    <li>SharedPool (Resource) → QueueB (Resource request)</li>
+  </ul>
+  </section>
+
+  <section class="key-parameters">
+  <h2>Key parameters</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+    <tbody>
+      <tr><td>Resource Pool</td><td>initialResources</td><td>2-5 (start with theoretical minimum, then increase)</td><td>Total number of available shared resources. This is the key decision variable. Too few causes excessive waiting; too many wastes capacity.</td></tr>
+      <tr><td>Queue</td><td>resourcePoolBlockId / resourcesNeeded</td><td>resourcePoolBlockId = ID of SharedPool, resourcesNeeded = 1</td><td>Each Queue must be linked to the Resource Pool. Items wait in queue until both a downstream Activity is free AND the required number of resources are available.</td></tr>
+      <tr><td>Activity (ProcessA)</td><td>distribution / arg1</td><td>Triangular(5, 10, 20) min</td><td>Resource holding time. Resources are held for the entire activity duration, so longer service times mean resources are unavailable to other processes for longer.</td></tr>
+      <tr><td>Resource Pool</td><td>allocationRule</td><td>FIFO or priority-based</td><td>Rule for allocating resources when multiple queues compete. FIFO allocates to the longest-waiting request. Priority allocation favors higher-priority processes.</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="common-mistakes">
+  <h2>Common mistakes</h2>
+  <ul>
+    <li>Forgetting to link the Queue block to the Resource Pool — in ExtendSim, the Queue block (not the Activity block) requests resources; if the Queue's resourcePoolBlockId is not set, resources are never requested and items flow through without resource constraint</li>
+    <li>Connecting the Resource Pool directly to the Activity block instead of to the Queue block — resources must be requested at the Queue so items wait for both server availability AND resource availability; resource request at Activity happens too late</li>
+    <li>Setting resourcesNeeded to a number larger than initialResources — if any process needs more resources than exist in the pool, those items will wait forever and the simulation will deadlock</li>
+    <li>Not including a Queue block before each Activity when using Resource Pool — without a Queue, the resource request linkage cannot be established and resources will not be properly requested or released</li>
+  </ul>
+  </section>
+
+  <section class="key-metrics">
+  <h2>What to measure</h2>
+  <ul>
+    <li>Resource pool utilization (average fraction of resources in use)</li>
+    <li>Average wait time in each queue due to resource unavailability</li>
+    <li>Average queue length for each process (resource contention indicator)</li>
+    <li>Throughput of each process versus arrival rate</li>
+    <li>Resource allocation fairness across competing processes</li>
+  </ul>
+  </section>
+
+  <section class="variations">
+  <h2>Variations</h2>
+  <ul>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+  </ul>
+  </section>
+</main>
+</body>
+</html>

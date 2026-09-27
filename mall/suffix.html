@@ -10,20 +10,20 @@
       <div class="footer-col">
         <h4 id="fColProd">Produkter</h4>
         <ul>
-          <li><a href="index.html#extendsim">ExtendSim CP</a></li>
-          <li><a href="index.html#extendsim">ExtendSim DE</a></li>
-          <li><a href="index.html#extendsim">ExtendSim Pro</a></li>
-          <li><a href="index.html#mcp">SimulationsMCP <span class="new-tag">NY</span></a></li>
+          <li><a href="{{ROOT}}index.html#extendsim">ExtendSim CP</a></li>
+          <li><a href="{{ROOT}}index.html#extendsim">ExtendSim DE</a></li>
+          <li><a href="{{ROOT}}index.html#extendsim">ExtendSim Pro</a></li>
+          <li><a href="{{ROOT}}index.html#mcp">SimulationsMCP <span class="new-tag">NY</span></a></li>
         </ul>
       </div>
 
       <div class="footer-col">
         <h4 id="fColTjanster">Tjänster</h4>
         <ul>
-          <li><a href="index.html#konsult" id="fKonsult">Simuleringskonsult</a></li>
-          <li><a href="index.html#konsult" id="fModell">Modellbyggnad</a></li>
-          <li><a href="index.html#konsult" id="fUtb">Utbildning</a></li>
-          <li><a href="index.html#konsult" id="fInfra">IT-infrastruktur</a></li>
+          <li><a href="{{ROOT}}index.html#konsult" id="fKonsult">Simuleringskonsult</a></li>
+          <li><a href="{{ROOT}}index.html#konsult" id="fModell">Modellbyggnad</a></li>
+          <li><a href="{{ROOT}}index.html#konsult" id="fUtb">Utbildning</a></li>
+          <li><a href="{{ROOT}}index.html#konsult" id="fInfra">IT-infrastruktur</a></li>
         </ul>
       </div>
 
@@ -31,9 +31,9 @@
         <h4 id="fColKontakt">Kontakt</h4>
         <ul>
           <li><a href="mailto:info@duke.se">info@duke.se</a></li>
-          <li><a href="index.html#om-oss" id="fOmOss">Om Duke Systems</a></li>
-          <li><a href="index.html#kontakt" id="fKontaktForm">Kontaktformulär</a></li>
-          <li><a href="index.html#sekretesspolicy">Sekretesspolicy</a></li>
+          <li><a href="{{ROOT}}index.html#om-oss" id="fOmOss">Om Duke Systems</a></li>
+          <li><a href="{{ROOT}}index.html#kontakt" id="fKontaktForm">Kontaktformulär</a></li>
+          <li><a href="{{ROOT}}index.html#sekretesspolicy">Sekretesspolicy</a></li>
         </ul>
       </div>
     </div>
@@ -41,7 +41,7 @@
     <div class="footer-bottom">
       <p id="copyright">© 2025 Duke Systems AB · Alla rättigheter förbehållna</p>
       <div style="display:flex;gap:1.5rem;">
-        <a href="index.html#sekretesspolicy">Sekretesspolicy</a>
+        <a href="{{ROOT}}index.html#sekretesspolicy">Sekretesspolicy</a>
         <a href="https://extendsim.com" target="_blank" rel="noopener">extendsim.com</a>
       </div>
     </div>
@@ -442,7 +442,7 @@ function applyLang(lang) {
   }
   const msgLabel = document.getElementById('msgLabel'); if (msgLabel) msgLabel.textContent = L.fldMsg;
   const msgInput = document.getElementById('meddelande'); if (msgInput) msgInput.placeholder = L.fldMsgPh;
-  setText('gdprText', L.gdprText + ' <a href="index.html#">' + L.gdprLink + '</a>.');
+  setText('gdprText', L.gdprText + ' <a href="{{ROOT}}index.html#">' + L.gdprLink + '</a>.');
   setText('sendBtn', L.sendBtn);
 
   // Footer
@@ -470,5 +470,5 @@ window.addEventListener('scroll', () => {
   });
 });
 </script>
-</body>
+{{EN_START}}</body>
 </html>

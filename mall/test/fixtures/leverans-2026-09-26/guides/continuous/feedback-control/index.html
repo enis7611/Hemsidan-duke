@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feedback Control System</title>
+<meta name="description" content="A continuous-time feedback control loop modeled with Value library blocks. A setpoint is compared against a measured output to compute an error signal, which drives a controller that adjusts the process input to minimize the error. Models PID controllers, thermostats, or any closed-loop regulation system.">
+</head>
+<body>
+<main class="guide-content">
+  <nav class="breadcrumb"><a href="/guides/">Guides</a> / <a href="/guides/continuous/">Continuous (Value)</a></nav>
+  <h1>Feedback Control System</h1>
+  <p class="summary">A continuous-time feedback control loop modeled with Value library blocks. A setpoint is compared against a measured output to compute an error signal, which drives a controller that adjusts the process input to minimize the error. Models PID controllers, thermostats, or any closed-loop regulation system.</p>
+
+  <section class="use-when">
+  <h2>When to use this</h2>
+  <ul>
+    <li>Modeling a closed-loop control system (thermostat, speed controller, inventory level controller)</li>
+    <li>Analyzing control system stability, overshoot, and settling time</li>
+    <li>Designing or tuning PID controller gains for a simulated process</li>
+    <li>Modeling any system where an output is continuously measured and used to adjust an input</li>
+    <li>Evaluating control system response to disturbances or setpoint changes</li>
+  </ul>
+  </section>
+
+  <section class="blocks">
+  <h2>Blocks</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Constant</td><td>Value.lbr</td><td>Setpoint</td><td>Provides the desired target value (setpoint) that the controller tries to achieve</td></tr>
+      <tr><td>Math</td><td>Value.lbr</td><td>ErrorCalc</td><td>Computes the error signal as (Setpoint - MeasuredOutput); provides the feedback comparison</td></tr>
+      <tr><td>Equation</td><td>Value.lbr</td><td>Controller</td><td>Implements the control law (proportional, integral, or PID); takes error as input and outputs control action</td></tr>
+      <tr><td>Holding Tank</td><td>Value.lbr</td><td>Process</td><td>Integrates the control action over time to produce the process output (state variable); represents system dynamics</td></tr>
+      <tr><td>Equation</td><td>Value.lbr</td><td>FeedbackSensor</td><td>Reads the current Holding Tank level (process output) and feeds it back to the ErrorCalc block to close the loop</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="connections">
+  <h2>Connections</h2>
+  <ul>
+    <li>Setpoint (V) → ErrorCalc (V[0])</li>
+    <li>FeedbackSensor (V) → ErrorCalc (V[1])</li>
+    <li>ErrorCalc (V) → Controller (V)</li>
+    <li>Controller (V) → Process (FlowIn)</li>
+    <li>Process (V) → FeedbackSensor (V)</li>
+  </ul>
+  </section>
+
+  <section class="key-parameters">
+  <h2>Key parameters</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+    <tbody>
+      <tr><td>Constant (Setpoint)</td><td>value</td><td>100 (target level, temperature, speed, etc.)</td><td>The desired steady-state value the controller attempts to maintain. The controller drives error (Setpoint - Output) toward zero.</td></tr>
+      <tr><td>Equation (Controller)</td><td>equation</td><td>Kp * e (proportional only) or Kp*e + Ki*integral(e) + Kd*derivative(e)</td><td>The control law. Proportional-only (Kp*e) is simplest but may have steady-state offset. Add integral term (Ki) to eliminate offset. Add derivative term (Kd) to reduce overshoot. Typical Kp=1-10, Ki=0.01-0.1, Kd=0-1.</td></tr>
+      <tr><td>Holding Tank</td><td>capacity / initialLevel</td><td>capacity=1000, initialLevel=0 (or near setpoint)</td><td>The Holding Tank acts as an integrator: its level changes at the rate set by the inflow (control action). Initial level sets the starting condition. Capacity must be large enough to accommodate the full operating range.</td></tr>
+      <tr><td>Math</td><td>equation (error = setpoint - feedback)</td><td>V[0] - V[1]</td><td>The error signal. Positive error means output is below setpoint (controller should increase input). Negative error means output is above setpoint (controller should decrease input or flow is reversed).</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="common-mistakes">
+  <h2>Common mistakes</h2>
+  <ul>
+    <li>Forgetting to close the feedback loop by connecting the Holding Tank output back to the ErrorCalc block — without this connection the model is open-loop (no feedback); the output will drift without correction and the controller has no effect</li>
+    <li>Setting controller gain Kp too high — proportional gains that are too large cause oscillation or instability; start with a low gain (Kp=0.1) and increase gradually while observing the step response in the Holding Tank level</li>
+    <li>Using Equation block instead of Holding Tank for the process state — the process must be a dynamic element (integrator) to have meaningful control dynamics; an Equation block computes an algebraic (instantaneous) value, not a time-integrated state, which eliminates the dynamics the controller is designed to regulate</li>
+    <li>Not accounting for the sign of the feedback — if the Math block computes (Feedback - Setpoint) instead of (Setpoint - Feedback), the error signal is inverted and the controller drives the output in the wrong direction, causing instability; always verify error = setpoint minus measured output</li>
+  </ul>
+  </section>
+
+  <section class="key-metrics">
+  <h2>What to measure</h2>
+  <ul>
+    <li>Settling time: time for Process output to reach within 5% of setpoint</li>
+    <li>Overshoot: peak deviation above setpoint as percentage of setpoint value</li>
+    <li>Steady-state error: remaining error after system settles (should be near zero with integral control)</li>
+    <li>Rise time: time for output to go from 10% to 90% of final value</li>
+    <li>Control effort: magnitude and variability of Controller output signal</li>
+  </ul>
+  </section>
+
+  <section class="variations">
+  <h2>Variations</h2>
+  <ul>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+  </ul>
+  </section>
+</main>
+</body>
+</html>

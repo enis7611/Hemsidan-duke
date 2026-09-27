@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="{{LANG}}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,7 @@
 <meta property="og:title" content="Duke Systems AB – Vi löser problemet. Sedan 1988.">
 <meta property="og:description" content="Nordisk distributör av ExtendSim. Simulering, AI-integration via MCP och IT-infrastruktur.">
 <meta property="og:type" content="website">
-<title>{{TITLE}}</title>
+<title>{{TITLE}}</title>{{ROBOTS}}
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1363,26 +1363,26 @@ footer {
 <header id="header">
   <div class="container">
     <nav class="nav-inner">
-      <a href="index.html#hero" class="nav-logo">
+      <a href="{{ROOT}}index.html#hero" class="nav-logo">
         <span class="nav-logo-main"><span class="logo-asterisks">**</span> Duke Systems <span class="logo-asterisks">**</span></span>
         <span class="nav-logo-sub">Sedan 1988</span>
       </a>
       <ul class="nav-links">
-        <li><a href="index.html#extendsim">ExtendSim</a></li>
+        <li><a href="{{ROOT}}index.html#extendsim">ExtendSim</a></li>
         <li>
-          <a href="index.html#mcp">SimulationsMCP <span class="mcp-badge" data-sv="NY" data-en="NEW">NY</span></a>
+          <a href="{{ROOT}}index.html#mcp">SimulationsMCP <span class="mcp-badge" data-sv="NY" data-en="NEW">NY</span></a>
         </li>
-        <li><a href="index.html#mqtt">ExtendMQTT <span class="mcp-badge" data-sv="NY" data-en="NEW">NY</span></a></li>
-        <li><a href="index.html#konsult" data-sv="Konsult" data-en="Consulting">Konsult</a></li>
-        <li><a href="index.html#om-oss" data-sv="Om oss" data-en="About">Om oss</a></li>
-        <li><a href="index.html#kontakt" data-sv="Kontakt" data-en="Contact">Kontakt</a></li>
+        <li><a href="{{ROOT}}index.html#mqtt">ExtendMQTT <span class="mcp-badge" data-sv="NY" data-en="NEW">NY</span></a></li>
+        <li><a href="{{ROOT}}index.html#konsult" data-sv="Konsult" data-en="Consulting">Konsult</a></li>
+        <li><a href="{{ROOT}}index.html#om-oss" data-sv="Om oss" data-en="About">Om oss</a></li>
+        <li><a href="{{ROOT}}index.html#kontakt" data-sv="Kontakt" data-en="Contact">Kontakt</a></li>
       </ul>
       <button class="lang-toggle" id="langToggle" onclick="toggleLang()" aria-label="Switch language">
         <span class="lang-sv">SV</span>
         <span class="lang-divider">/</span>
         <span class="lang-en">EN</span>
       </button>
-      <a href="index.html#kontakt" class="btn btn-primary nav-cta" id="navCta" style="font-size:0.82rem;padding:9px 20px;">Kontakta oss</a>
+      <a href="{{ROOT}}index.html#kontakt" class="btn btn-primary nav-cta" id="navCta" style="font-size:0.82rem;padding:9px 20px;">Kontakta oss</a>
       <button class="hamburger" id="hamburger" aria-label="Meny">
         <span></span><span></span><span></span>
       </button>
@@ -1392,12 +1392,12 @@ footer {
 
 <!-- Mobile nav -->
 <nav class="mobile-nav" id="mobileNav">
-  <a href="index.html#extendsim" onclick="closeMobileNav()">ExtendSim</a>
-  <a href="index.html#mcp" onclick="closeMobileNav()">SimulationsMCP <span class="new-tag" id="mcpTagMobile">NY</span></a>
-  <a href="index.html#mqtt" onclick="closeMobileNav()">ExtendMQTT <span class="new-tag" data-sv="NY" data-en="NEW">NY</span></a>
-  <a href="index.html#konsult" onclick="closeMobileNav()" id="mobileKonsult">Konsulttjänster</a>
-  <a href="index.html#om-oss" onclick="closeMobileNav()" id="mobileOmOss">Om oss</a>
-  <a href="index.html#kontakt" onclick="closeMobileNav()" id="mobileKontakt">Kontakta oss</a>
+  <a href="{{ROOT}}index.html#extendsim" onclick="closeMobileNav()">ExtendSim</a>
+  <a href="{{ROOT}}index.html#mcp" onclick="closeMobileNav()">SimulationsMCP <span class="new-tag" id="mcpTagMobile">NY</span></a>
+  <a href="{{ROOT}}index.html#mqtt" onclick="closeMobileNav()">ExtendMQTT <span class="new-tag" data-sv="NY" data-en="NEW">NY</span></a>
+  <a href="{{ROOT}}index.html#konsult" onclick="closeMobileNav()" id="mobileKonsult">Konsulttjänster</a>
+  <a href="{{ROOT}}index.html#om-oss" onclick="closeMobileNav()" id="mobileOmOss">Om oss</a>
+  <a href="{{ROOT}}index.html#kontakt" onclick="closeMobileNav()" id="mobileKontakt">Kontakta oss</a>
 </nav>
 
 <style>

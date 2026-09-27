@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shift Schedule</title>
+<meta name="description" content="A model where processing capacity changes over time according to a work shift schedule. Activity capacity is linked to a Shift block that defines working hours, breaks, and off-shift periods. Models any operation with scheduled capacity variation.">
+</head>
+<body>
+<main class="guide-content">
+  <nav class="breadcrumb"><a href="/guides/">Guides</a> / <a href="/guides/resources/">Resource Management</a></nav>
+  <h1>Shift Schedule</h1>
+  <p class="summary">A model where processing capacity changes over time according to a work shift schedule. Activity capacity is linked to a Shift block that defines working hours, breaks, and off-shift periods. Models any operation with scheduled capacity variation.</p>
+
+  <section class="use-when">
+  <h2>When to use this</h2>
+  <ul>
+    <li>Modeling a facility that operates on defined shifts (8-hour, 12-hour, or custom shift patterns)</li>
+    <li>Analyzing queue buildup during off-hours and the clearing time at shift start</li>
+    <li>Evaluating the impact of adding overtime or an additional shift on throughput and backlog</li>
+    <li>Modeling scheduled maintenance windows that take capacity offline periodically</li>
+    <li>Any system where server capacity is a time-varying schedule rather than a fixed number</li>
+  </ul>
+  </section>
+
+  <section class="blocks">
+  <h2>Blocks</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Create</td><td>Item.lbr</td><td>Arrivals</td><td>Generates items continuously (24/7 demand even when processing is offline during off-shift)</td></tr>
+      <tr><td>Queue</td><td>Item.lbr</td><td>WorkQueue</td><td>Accumulates items during off-shift periods; drains when shift starts and capacity comes online</td></tr>
+      <tr><td>Activity</td><td>Item.lbr</td><td>ShiftedServer</td><td>Processing activity whose capacity is controlled by the Shift block; capacity drops to zero off-shift</td></tr>
+      <tr><td>Shift</td><td>Item.lbr</td><td>WorkSchedule</td><td>Defines the shift pattern: start times, end times, and capacity for each shift period; drives Activity capacity</td></tr>
+      <tr><td>Exit</td><td>Item.lbr</td><td>Completions</td><td>Records completed items; throughput reflects the shift-constrained effective capacity</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="connections">
+  <h2>Connections</h2>
+  <ul>
+    <li>Arrivals (ItemOut) → WorkQueue (ItemIn)</li>
+    <li>WorkQueue (ItemOut) → ShiftedServer (ItemIn)</li>
+    <li>ShiftedServer (ItemOut) → Completions (ItemIn)</li>
+    <li>WorkSchedule (Value output) → ShiftedServer (capacity connector)</li>
+  </ul>
+  </section>
+
+  <section class="key-parameters">
+  <h2>Key parameters</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+    <tbody>
+      <tr><td>Shift</td><td>schedule</td><td>[{startTime: 0, endTime: 8, capacity: 1}, {startTime: 8, endTime: 16, capacity: 3}, {startTime: 16, endTime: 24, capacity: 2}]</td><td>Defines capacity at each time period. Times are in simulation time units. Capacity=0 means off-shift. Multiple rows define multiple shift periods in one 24-hour cycle.</td></tr>
+      <tr><td>Activity</td><td>distribution / arg1</td><td>Triangular(3, 5, 8) min</td><td>Processing time per item during active shift. Items in the Activity when a shift ends continue processing; items in Queue wait until next shift starts.</td></tr>
+      <tr><td>Create</td><td>distribution / arg1</td><td>Exponential, mean matching peak capacity utilization target</td><td>Arrival rate should be set so that total daily arrivals match expected daily throughput; if arrivals exceed daily capacity, backlog grows without bound.</td></tr>
+      <tr><td>Shift</td><td>schedule capacity values</td><td>Integer values (1, 2, 3) representing number of simultaneous servers</td><td>Shift capacity values set the maximum concurrent items being processed by the linked Activity. Ensure Activity can handle the specified parallel capacity.</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="common-mistakes">
+  <h2>Common mistakes</h2>
+  <ul>
+    <li>Not connecting the Shift block output to the Activity capacity connector — the Shift block has no effect on the Activity unless its value output connector is wired to the Activity's capacity input; without this connection the Activity runs at full capacity 24/7</li>
+    <li>Setting shift schedule times in wrong time units — if the simulation runs in minutes but shift start/end times are entered as hours (e.g., 8 instead of 480), the shift pattern will be wildly incorrect; always confirm simulation time units before entering schedule times</li>
+    <li>Forgetting that items already in the Activity when a shift ends continue processing to completion — the shift controls how many new items can start, not whether in-progress items finish; this is usually correct behavior but must be understood when analyzing shift boundary effects</li>
+    <li>Making total daily arrival volume exceed total daily capacity — if arrivals per day consistently exceed (capacity_per_shift * hours_per_shift / mean_service_time), the queue grows unboundedly across days; always verify that daily capacity exceeds daily demand</li>
+  </ul>
+  </section>
+
+  <section class="key-metrics">
+  <h2>What to measure</h2>
+  <ul>
+    <li>Queue length at shift start (backlog carryover from previous off-period)</li>
+    <li>Time to clear overnight or off-shift backlog after shift starts</li>
+    <li>Effective throughput per shift period</li>
+    <li>Activity utilization during on-shift hours (not counting off-shift time)</li>
+    <li>Peak queue length during off-shift accumulation</li>
+  </ul>
+  </section>
+
+  <section class="variations">
+  <h2>Variations</h2>
+  <ul>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+  </ul>
+  </section>
+</main>
+</body>
+</html>

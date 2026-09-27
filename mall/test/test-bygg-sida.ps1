@@ -83,5 +83,35 @@ $p = Skriv 'svenska.html' ($giltig.Replace('Hej', 'Hej på dig – ÅÄÖ åäö
 & $bygg -Innehall $p -Ut $ut | Out-Null
 Ok (Test-Path (Join-Path $ut 'svenska.html')) "vanlig svenska med å/ä/ö/é/ü godkänns"
 
+# 10. Undersida i mapp: header-/footerlänkar får ../ per nivå, filen hamnar i rätt mapp
+$p = Skriv 'djup.html' $giltig
+& $bygg -Innehall $p -Sokvag 'a/b/c/index.html' -Ut $ut | Out-Null
+$s = [IO.File]::ReadAllText((Join-Path $ut 'a\b\c\index.html'))
+Ok ($s.Contains('href="../../../index.html#mcp"')) "nivå 3: länk till startsidan får ../../../"
+Ok (-not ($s -match 'href="index\.html#')) "nivå 3: inga länkar kvar relativt fel mapp"
+Ok ($s.Contains('<html lang="sv">')) "utan lang-rad: lang=sv"
+Ok (-not $s.Contains('name="robots"')) "utan robots-rad: ingen robots-meta"
+Ok (-not $s.Contains('{{')) "inga platshållare kvar (nivå 3)"
+
+# 11. lang: en + robots → <html lang="en">, robots-meta, EN-start
+$en = "<!--`ntitle: Guide`ndescription: Beskrivning`nlang: en`nrobots: noindex, nofollow`npage-css:`n-->`n<section>Hi</section>`n"
+$p = Skriv 'guide.html' $en
+& $bygg -Innehall $p -Sokvag 'g/index.html' -Ut $ut | Out-Null
+$s = [IO.File]::ReadAllText((Join-Path $ut 'g\index.html'))
+Ok ($s.Contains('<html lang="en">')) "lang: en ger <html lang=`"en`">"
+Ok ($s.Contains("<title>Guide</title>`n<meta name=`"robots`" content=`"noindex, nofollow`">")) "robots-meta direkt efter title"
+Ok ($s.Contains("<script>toggleLang();</script>`n</body>")) "EN-start före </body>"
+Ok ($s.Contains('<section>Hi</section>')) "innehåll med lang/robots-rader på plats"
+
+# 12. Otillåtna värden och sökvägar
+$p = Skriv 'fellang.html' ($en.Replace('lang: en', 'lang: de'))
+Kastar { & $bygg -Innehall $p -Sokvag 'x.html' -Ut $ut } "lang annat än sv/en avvisas"
+$p = Skriv 'ok.html' $giltig
+Kastar { & $bygg -Innehall $p -Sokvag 'Guides/x.html' -Ut $ut } "mappnamn med versal avvisas"
+Kastar { & $bygg -Innehall $p -Sokvag 'a/../x.html' -Ut $ut } "'..' i sökväg avvisas"
+Kastar { & $bygg -Innehall $p -Sokvag 'index.html' -Ut $ut } "index.html i roten avvisas via -Sokvag"
+& $bygg -Innehall $p -Sokvag 'sub/index.html' -Ut $ut | Out-Null
+Ok (Test-Path (Join-Path $ut 'sub\index.html')) "index.html i undermapp tillåts"
+
 Remove-Item -Recurse -Force $tmp
 if ($script:fel) { Write-Host "$($script:fel) test fallerade" -ForegroundColor Red; exit 1 } else { Write-Host "Alla test OK"; exit 0 }

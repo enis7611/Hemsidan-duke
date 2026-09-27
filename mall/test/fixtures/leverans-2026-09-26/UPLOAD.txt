@@ -1,0 +1,43 @@
+UPLOAD TO duke.se - built 2026-09-26, guides v1.13.0
+================================================================
+
+Copy the folders below to the web root of duke.se, keeping the paths exactly.
+Do NOT upload UPLOAD.txt or urls.json - they are notes for you.
+
+1. MUST - installed servers fetch this file, byte for byte, from a fixed address.
+   It has to be online BEFORE the next server release, or every server gets a 404.
+
+     simulationsmcp/v1/modeling_guides.json  ->  https://duke.se/simulationsmcp/v1/modeling_guides.json
+     simulationsmcp/v1/guide-schema.json     ->  https://duke.se/simulationsmcp/v1/guide-schema.json
+
+   Upload in binary mode (no line-ending conversion). Check it afterwards:
+     curl -s https://duke.se/simulationsmcp/v1/modeling_guides.json | sha256sum
+   must print
+     a923b679a0efba85b0801d59a9c93eedf41b13faa5259f4c6343f1010d207425
+   (PowerShell: Invoke-WebRequest <url> -OutFile g.json; Get-FileHash g.json)
+   The server must answer with https, status 200 and no redirect to another host.
+
+2. PAGES - one page per guide, 19 in all. Plain HTML, no styling: how they look is up to
+   the web site. Folder guides/ -> https://duke.se/guides/
+
+     /guides/
+     /guides/continuous/
+     /guides/continuous/feedback-control/
+     /guides/flow/
+     /guides/flow/tank-system/
+     /guides/logistics/
+     /guides/logistics/inventory-management/
+     /guides/logistics/supply-chain/
+     /guides/manufacturing/
+     /guides/manufacturing/batch-assembly/
+     /guides/manufacturing/inspection-rework/
+     /guides/manufacturing/serial-line/
+     /guides/queuing/
+     /guides/queuing/multi-server/
+     /guides/queuing/priority-queue/
+     /guides/queuing/simple-queue/
+     /guides/resources/
+     /guides/resources/shared-resources/
+     /guides/resources/shift-schedule/
+
+   Once a page is online, keep its address: installed servers and other people link to it.
