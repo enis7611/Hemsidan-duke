@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Multi-Server Queue (M/M/c)</title>
+<meta name="description" content="A queuing system with multiple parallel servers sharing a single waiting line. Items wait in one queue and are routed to the next available server, modeling call centers, bank teller lines, or parallel machines.">
+</head>
+<body>
+<main class="guide-content">
+  <nav class="breadcrumb"><a href="/guides/">Guides</a> / <a href="/guides/queuing/">Queuing Systems</a></nav>
+  <h1>Multi-Server Queue (M/M/c)</h1>
+  <p class="summary">A queuing system with multiple parallel servers sharing a single waiting line. Items wait in one queue and are routed to the next available server, modeling call centers, bank teller lines, or parallel machines.</p>
+
+  <section class="use-when">
+  <h2>When to use this</h2>
+  <ul>
+    <li>Modeling multiple identical servers serving one shared waiting line (e.g., bank tellers, checkout lanes)</li>
+    <li>Finding the optimal number of servers to balance cost against customer wait time</li>
+    <li>Comparing single-queue/multi-server versus multi-queue/single-server configurations</li>
+    <li>Evaluating the impact of adding or removing servers on throughput and utilization</li>
+    <li>Modeling parallel machines or workstations in a manufacturing cell</li>
+  </ul>
+  </section>
+
+  <section class="blocks">
+  <h2>Blocks</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Create</td><td>Item.lbr</td><td>Arrivals</td><td>Generates arriving items according to inter-arrival distribution</td></tr>
+      <tr><td>Queue</td><td>Item.lbr</td><td>SharedQueue</td><td>Single shared waiting line for all servers; items leave when any server becomes free</td></tr>
+      <tr><td>Workstation</td><td>Item.lbr</td><td>Servers</td><td>Multi-server processing block with built-in queue and configurable maxServers parameter; simplest approach for M/M/c</td></tr>
+      <tr><td>Exit</td><td>Item.lbr</td><td>Departures</td><td>Collects completed items and records throughput statistics</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="connections">
+  <h2>Connections</h2>
+  <ul>
+    <li>Arrivals (ItemOut) → Servers (ItemIn)</li>
+    <li>Servers (ItemOut) → Departures (ItemIn)</li>
+  </ul>
+  </section>
+
+  <section class="key-parameters">
+  <h2>Key parameters</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+    <tbody>
+      <tr><td>Workstation</td><td>maxServers</td><td>2-5</td><td>Number of parallel server channels. This is the 'c' in M/M/c. The Workstation block includes its own internal queue, so no separate Queue block is needed when using Workstation.</td></tr>
+      <tr><td>Workstation</td><td>distribution / arg1</td><td>Exponential, mean=8 min</td><td>Service time distribution per server. Each server independently samples from this distribution.</td></tr>
+      <tr><td>Create</td><td>distribution / arg1</td><td>Exponential, mean=3 min</td><td>Inter-arrival time. Total offered load = mean service time / (c * mean inter-arrival time) must be &lt; 1.</td></tr>
+      <tr><td>Workstation</td><td>maxQueueLength</td><td>0 (unlimited)</td><td>Maximum internal queue capacity. Set to 0 for unlimited. When queue is full, new arrivals are blocked.</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="common-mistakes">
+  <h2>Common mistakes</h2>
+  <ul>
+    <li>Using a Workstation block (which has an internal queue) and also placing a separate Queue block before it — this creates two queues in series, inflating wait times and misrepresenting system behavior; use Workstation alone or use separate Queue+Activity blocks</li>
+    <li>Setting maxServers on a Workstation but forgetting that Workstation service time is per item, not shared across servers — each server independently draws from the service distribution</li>
+    <li>Connecting parallel Activity blocks without Select Item Out/In routing — items will only flow to the first connected Activity; use Select Item Out (shortest queue mode) to distribute load correctly when using separate Activity blocks instead of Workstation</li>
+    <li>Not verifying offered load (lambda / (c * mu)) is below 1.0 — with multiple servers the stability condition is different from M/M/1 and is easy to miscalculate</li>
+  </ul>
+  </section>
+
+  <section class="key-metrics">
+  <h2>What to measure</h2>
+  <ul>
+    <li>Average number waiting in queue (Workstation internal queue statistics)</li>
+    <li>Average wait time before service begins</li>
+    <li>Individual server utilization (should be balanced across servers)</li>
+    <li>Overall throughput versus arrival rate</li>
+    <li>Probability that all servers are busy (P(delay))</li>
+  </ul>
+  </section>
+
+  <section class="variations">
+  <h2>Variations</h2>
+  <ul>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+  </ul>
+  </section>
+</main>
+</body>
+</html>

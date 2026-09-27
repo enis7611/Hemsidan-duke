@@ -1,0 +1,148 @@
+<!--
+title: Multi-Server Queue (M/M/c) | Duke Systems AB
+description: A queuing system with multiple parallel servers sharing a single waiting line. Items wait in one queue and are routed to the next available server, modeling call centers, bank teller lines, or parallel machines.
+lang: en
+robots: noindex, nofollow
+page-css:
+  .duke-table{width:100%;max-width:820px;margin:0 auto;border-collapse:collapse;font-size:0.92rem;}
+  .duke-table th{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);text-align:left;padding:0.75rem 1rem;border-bottom:2px solid var(--teal);}
+  .duke-table td{padding:0.75rem 1rem;border-bottom:1px solid var(--border);color:var(--navy);vertical-align:top;}
+  .duke-table tr:last-child td{border-bottom:none;}
+  .duke-table-wrap{overflow-x:auto;}
+-->
+<!-- ─── PRODUKT-HERO ─────────────────────────────────────── -->
+<section id="top" style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 45%,#2d7a7a 100%);padding:140px 0 80px;position:relative;overflow:hidden;">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <a href="/simulationsmcp/v1/guides/queuing/" style="display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--steel-lt);text-decoration:none;margin-bottom:1.5rem;">← Queuing Systems</a>
+    <div style="display:inline-flex;align-items:center;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <span style="font-size:2rem;">🧭</span>
+      <span class="section-label" style="color:var(--steel-lt);margin:0;">Queuing Systems</span>
+    </div>
+    <h1 style="color:#fff;margin-bottom:1.25rem;">Multi-Server Queue (M/M/c)</h1>
+    <p style="font-size:1.15rem;color:rgba(255,255,255,0.8);max-width:640px;">A queuing system with multiple parallel servers sharing a single waiting line. Items wait in one queue and are routed to the next available server, modeling call centers, bank teller lines, or parallel machines.</p>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Queuing Systems</span>
+      <h2 style="color:var(--navy);">When to use this</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;">Modeling multiple identical servers serving one shared waiting line (e.g., bank tellers, checkout lanes)</li>
+      <li style="margin-bottom:0.6rem;">Finding the optimal number of servers to balance cost against customer wait time</li>
+      <li style="margin-bottom:0.6rem;">Comparing single-queue/multi-server versus multi-queue/single-server configurations</li>
+      <li style="margin-bottom:0.6rem;">Evaluating the impact of adding or removing servers on throughput and utilization</li>
+      <li style="margin-bottom:0.6rem;">Modeling parallel machines or workstations in a manufacturing cell</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Queuing Systems</span>
+      <h2 style="color:var(--navy);">Blocks</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+        <tbody><tr><td>Create</td><td>Item.lbr</td><td>Arrivals</td><td>Generates arriving items according to inter-arrival distribution</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>SharedQueue</td><td>Single shared waiting line for all servers; items leave when any server becomes free</td></tr><tr><td>Workstation</td><td>Item.lbr</td><td>Servers</td><td>Multi-server processing block with built-in queue and configurable maxServers parameter; simplest approach for M/M/c</td></tr><tr><td>Exit</td><td>Item.lbr</td><td>Departures</td><td>Collects completed items and records throughput statistics</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Queuing Systems</span>
+      <h2 style="color:#fff;">Connections</h2>
+    </div>
+    <div class="mcp-terminal reveal" style="background:rgba(0,0,0,0.4);max-width:720px;margin:0 auto;">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div>
+        <span class="terminal-title">Connections</span>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line"><span class="terminal-result">Arrivals (ItemOut) → Servers (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Servers (ItemOut) → Departures (ItemIn)</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Queuing Systems</span>
+      <h2 style="color:var(--navy);">Key parameters</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+        <tbody><tr><td>Workstation</td><td>maxServers</td><td>2-5</td><td>Number of parallel server channels. This is the &#x27;c&#x27; in M/M/c. The Workstation block includes its own internal queue, so no separate Queue block is needed when using Workstation.</td></tr><tr><td>Workstation</td><td>distribution / arg1</td><td>Exponential, mean=8 min</td><td>Service time distribution per server. Each server independently samples from this distribution.</td></tr><tr><td>Create</td><td>distribution / arg1</td><td>Exponential, mean=3 min</td><td>Inter-arrival time. Total offered load = mean service time / (c * mean inter-arrival time) must be &lt; 1.</td></tr><tr><td>Workstation</td><td>maxQueueLength</td><td>0 (unlimited)</td><td>Maximum internal queue capacity. Set to 0 for unlimited. When queue is full, new arrivals are blocked.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Queuing Systems</span>
+      <h2 style="color:var(--navy);">Common mistakes</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Using a Workstation block (which has an internal queue) and also placing a separate Queue block before it — this creates two queues in series, inflating wait times and misrepresenting system behavior; use Workstation alone or use separate Queue+Activity blocks</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Setting maxServers on a Workstation but forgetting that Workstation service time is per item, not shared across servers — each server independently draws from the service distribution</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Connecting parallel Activity blocks without Select Item Out/In routing — items will only flow to the first connected Activity; use Select Item Out (shortest queue mode) to distribute load correctly when using separate Activity blocks instead of Workstation</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Not verifying offered load (lambda / (c * mu)) is below 1.0 — with multiple servers the stability condition is different from M/M/1 and is easy to miscalculate</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Queuing Systems</span>
+      <h2 style="color:#fff;">What to measure</h2>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Average number waiting in queue (Workstation internal queue statistics)</p></div>
+      <div class="pillar reveal reveal-delay-2"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Average wait time before service begins</p></div>
+      <div class="pillar reveal reveal-delay-3"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Individual server utilization (should be balanced across servers)</p></div>
+      <div class="pillar reveal reveal-delay-4"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Overall throughput versus arrival rate</p></div>
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Probability that all servers are busy (P(delay))</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Queuing Systems</span>
+      <h2 style="color:var(--navy);">Variations</h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1"><div class="card-icon teal">🔀</div><h3>Heterogeneous servers</h3><p>Use separate Queue + multiple Activity blocks with different service time distributions; route via Select Item Out in shortest-queue mode</p></div>
+      <div class="service-card reveal reveal-delay-2"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/queuing/simple-queue/" style="color:inherit;text-decoration:none;">Single server baseline →</a></h3><p>Set maxServers=1 on Workstation or use a single Activity to establish the M/M/1 baseline for comparison</p></div>
+      <div class="service-card reveal reveal-delay-3"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/queuing/priority-queue/" style="color:inherit;text-decoration:none;">Priority multi-server →</a></h3><p>Add Set block to assign priorities; configure Workstation or Queue with attribute-based ranking</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ──────────────────────────────────────────────── -->
+<section style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 50%,#287070 100%);padding:80px 0;text-align:center;">
+  <div class="container" style="position:relative;z-index:2;">
+    <h2 style="color:#fff;margin-bottom:1rem;" data-sv="Behöver du hjälp med din modell?" data-en="Need help with your model?">Behöver du hjälp med din modell?</h2>
+    <p style="color:rgba(255,255,255,0.75);max-width:480px;margin:0 auto 2.5rem;" data-sv="Duke Systems har arbetat med ExtendSim sedan 1988." data-en="Duke Systems has worked with ExtendSim since 1988.">Duke Systems har arbetat med ExtendSim sedan 1988.</p>
+    <a href="/index.html#kontakt" class="btn btn-primary" data-sv="Berätta om ditt problem" data-en="Tell us about your problem">Berätta om ditt problem</a>
+  </div>
+</section>
+

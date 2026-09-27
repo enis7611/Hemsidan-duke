@@ -1,0 +1,153 @@
+<!--
+title: Multi-Stage Supply Chain | Duke Systems AB
+description: A sequential supply chain model with warehouse, transportation, and retail stages. Each stage has its own processing time and queue, representing the flow of goods from supplier through distribution to end customer.
+lang: en
+robots: noindex, nofollow
+page-css:
+  .duke-table{width:100%;max-width:820px;margin:0 auto;border-collapse:collapse;font-size:0.92rem;}
+  .duke-table th{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);text-align:left;padding:0.75rem 1rem;border-bottom:2px solid var(--teal);}
+  .duke-table td{padding:0.75rem 1rem;border-bottom:1px solid var(--border);color:var(--navy);vertical-align:top;}
+  .duke-table tr:last-child td{border-bottom:none;}
+  .duke-table-wrap{overflow-x:auto;}
+-->
+<!-- ─── PRODUKT-HERO ─────────────────────────────────────── -->
+<section id="top" style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 45%,#2d7a7a 100%);padding:140px 0 80px;position:relative;overflow:hidden;">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <a href="/simulationsmcp/v1/guides/logistics/" style="display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--steel-lt);text-decoration:none;margin-bottom:1.5rem;">← Logistics &amp; Supply Chain</a>
+    <div style="display:inline-flex;align-items:center;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <span style="font-size:2rem;">🧭</span>
+      <span class="section-label" style="color:var(--steel-lt);margin:0;">Logistics &amp; Supply Chain</span>
+    </div>
+    <h1 style="color:#fff;margin-bottom:1.25rem;">Multi-Stage Supply Chain</h1>
+    <p style="font-size:1.15rem;color:rgba(255,255,255,0.8);max-width:640px;">A sequential supply chain model with warehouse, transportation, and retail stages. Each stage has its own processing time and queue, representing the flow of goods from supplier through distribution to end customer.</p>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Logistics &amp; Supply Chain</span>
+      <h2 style="color:var(--navy);">When to use this</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;">Modeling end-to-end supply chain flows from supplier to customer across multiple stages</li>
+      <li style="margin-bottom:0.6rem;">Analyzing lead times and inventory levels at each stage of the supply chain</li>
+      <li style="margin-bottom:0.6rem;">Identifying bottleneck stages that constrain delivery performance</li>
+      <li style="margin-bottom:0.6rem;">Evaluating the bullwhip effect and demand variability amplification upstream</li>
+      <li style="margin-bottom:0.6rem;">Comparing supply chain configurations (number of distribution centers, transport modes)</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Logistics &amp; Supply Chain</span>
+      <h2 style="color:var(--navy);">Blocks</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+        <tbody><tr><td>Create</td><td>Item.lbr</td><td>CustomerOrders</td><td>Generates customer orders or demand events according to demand distribution</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>WarehouseQueue</td><td>Order backlog at warehouse stage; represents orders waiting to be picked and packed</td></tr><tr><td>Activity</td><td>Item.lbr</td><td>Warehouse</td><td>Warehouse processing: picking, packing, and staging for shipment</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>TransportQueue</td><td>Shipments waiting for transport (staging area); represents consolidation or loading time</td></tr><tr><td>Activity</td><td>Item.lbr</td><td>Transport</td><td>Transportation leg from warehouse to distribution center or retail; models transit time</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>RetailQueue</td><td>Inbound goods waiting to be received and processed at retail or delivery point</td></tr><tr><td>Activity</td><td>Item.lbr</td><td>Retail</td><td>Final delivery or retail processing step; represents last-mile or store receiving</td></tr><tr><td>Exit</td><td>Item.lbr</td><td>FulfilledOrders</td><td>Records fulfilled orders; cycle time from Create to Exit represents total order lead time</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Logistics &amp; Supply Chain</span>
+      <h2 style="color:#fff;">Connections</h2>
+    </div>
+    <div class="mcp-terminal reveal" style="background:rgba(0,0,0,0.4);max-width:720px;margin:0 auto;">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div>
+        <span class="terminal-title">Connections</span>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line"><span class="terminal-result">CustomerOrders (ItemOut) → WarehouseQueue (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">WarehouseQueue (ItemOut) → Warehouse (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Warehouse (ItemOut) → TransportQueue (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">TransportQueue (ItemOut) → Transport (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Transport (ItemOut) → RetailQueue (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">RetailQueue (ItemOut) → Retail (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Retail (ItemOut) → FulfilledOrders (ItemIn)</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Logistics &amp; Supply Chain</span>
+      <h2 style="color:var(--navy);">Key parameters</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+        <tbody><tr><td>Activity (Transport)</td><td>distribution / arg1</td><td>Constant or triangular (1-3 days)</td><td>Transit time between supply chain stages. This is often the largest component of total lead time and is typically modeled as a constant or slightly variable duration.</td></tr><tr><td>Activity (Warehouse)</td><td>distribution / arg1</td><td>Exponential or triangular (2-8 hours)</td><td>Order processing time at warehouse. Highly variable processing times cause queue buildup and increase order lead time variability.</td></tr><tr><td>Create</td><td>distribution / arg1</td><td>Poisson arrivals (exponential inter-arrival) or scheduled demand</td><td>Customer order arrival pattern. Seasonal or bursty demand causes temporary queue buildup at each stage.</td></tr><tr><td>Activity (Retail)</td><td>distribution / arg1</td><td>Constant or triangular (1-4 hours)</td><td>Receiving and processing time at final destination. Often much shorter than transport time but still contributes to total lead time.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Logistics &amp; Supply Chain</span>
+      <h2 style="color:var(--navy);">Common mistakes</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Modeling supply chain stages with constant (zero-variability) processing times — real supply chains have significant variability in picking, transport, and receiving times; constant times underestimate queue buildup and lead time variability</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Not including Queue blocks between stages — items would flow straight through without buffering, preventing the model from capturing queuing and delay effects that are the primary source of supply chain variability</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Treating the model as a single flow without modeling stockouts or capacity limits — if any stage has finite capacity (e.g., truck capacity), add Queue maximum capacity limits and handle overflow items explicitly</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Using the same time units for all stages without conversion — warehouse operations may be in hours while transport is in days; ensure simulation time units are consistent or use time_convert tool to align</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Logistics &amp; Supply Chain</span>
+      <h2 style="color:#fff;">What to measure</h2>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Total order lead time from placement to fulfillment (Create to Exit cycle time)</p></div>
+      <div class="pillar reveal reveal-delay-2"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Stage-by-stage queue lengths (indicator of bottleneck location)</p></div>
+      <div class="pillar reveal reveal-delay-3"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Utilization at each processing stage</p></div>
+      <div class="pillar reveal reveal-delay-4"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>On-time delivery rate (fraction of orders fulfilled within target lead time)</p></div>
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>WIP inventory value at each stage (queue length * average item value)</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Logistics &amp; Supply Chain</span>
+      <h2 style="color:var(--navy);">Variations</h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/logistics/inventory-management/" style="color:inherit;text-decoration:none;">With inventory control (reorder point) →</a></h3><p>Add Gate blocks at each stage to hold orders when inventory is below reorder point; model replenishment as a separate item stream</p></div>
+      <div class="service-card reveal reveal-delay-2"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/resources/shared-resources/" style="color:inherit;text-decoration:none;">With shared transport resources →</a></h3><p>Add Resource Pool for trucks or transport capacity; Transport Activity requests from pool, limiting how many shipments can be in transit simultaneously</p></div>
+      <div class="service-card reveal reveal-delay-3"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/resources/shift-schedule/" style="color:inherit;text-decoration:none;">With shift-based warehouse operations →</a></h3><p>Add Shift block to Warehouse Activity to restrict processing to working hours; queue accumulates during off-hours</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ──────────────────────────────────────────────── -->
+<section style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 50%,#287070 100%);padding:80px 0;text-align:center;">
+  <div class="container" style="position:relative;z-index:2;">
+    <h2 style="color:#fff;margin-bottom:1rem;" data-sv="Behöver du hjälp med din modell?" data-en="Need help with your model?">Behöver du hjälp med din modell?</h2>
+    <p style="color:rgba(255,255,255,0.75);max-width:480px;margin:0 auto 2.5rem;" data-sv="Duke Systems har arbetat med ExtendSim sedan 1988." data-en="Duke Systems has worked with ExtendSim since 1988.">Duke Systems har arbetat med ExtendSim sedan 1988.</p>
+    <a href="/index.html#kontakt" class="btn btn-primary" data-sv="Berätta om ditt problem" data-en="Tell us about your problem">Berätta om ditt problem</a>
+  </div>
+</section>
+

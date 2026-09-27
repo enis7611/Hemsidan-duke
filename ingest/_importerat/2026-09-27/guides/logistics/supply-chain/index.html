@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Multi-Stage Supply Chain</title>
+<meta name="description" content="A sequential supply chain model with warehouse, transportation, and retail stages. Each stage has its own processing time and queue, representing the flow of goods from supplier through distribution to end customer.">
+</head>
+<body>
+<main class="guide-content">
+  <nav class="breadcrumb"><a href="/guides/">Guides</a> / <a href="/guides/logistics/">Logistics &amp; Supply Chain</a></nav>
+  <h1>Multi-Stage Supply Chain</h1>
+  <p class="summary">A sequential supply chain model with warehouse, transportation, and retail stages. Each stage has its own processing time and queue, representing the flow of goods from supplier through distribution to end customer.</p>
+
+  <section class="use-when">
+  <h2>When to use this</h2>
+  <ul>
+    <li>Modeling end-to-end supply chain flows from supplier to customer across multiple stages</li>
+    <li>Analyzing lead times and inventory levels at each stage of the supply chain</li>
+    <li>Identifying bottleneck stages that constrain delivery performance</li>
+    <li>Evaluating the bullwhip effect and demand variability amplification upstream</li>
+    <li>Comparing supply chain configurations (number of distribution centers, transport modes)</li>
+  </ul>
+  </section>
+
+  <section class="blocks">
+  <h2>Blocks</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Create</td><td>Item.lbr</td><td>CustomerOrders</td><td>Generates customer orders or demand events according to demand distribution</td></tr>
+      <tr><td>Queue</td><td>Item.lbr</td><td>WarehouseQueue</td><td>Order backlog at warehouse stage; represents orders waiting to be picked and packed</td></tr>
+      <tr><td>Activity</td><td>Item.lbr</td><td>Warehouse</td><td>Warehouse processing: picking, packing, and staging for shipment</td></tr>
+      <tr><td>Queue</td><td>Item.lbr</td><td>TransportQueue</td><td>Shipments waiting for transport (staging area); represents consolidation or loading time</td></tr>
+      <tr><td>Activity</td><td>Item.lbr</td><td>Transport</td><td>Transportation leg from warehouse to distribution center or retail; models transit time</td></tr>
+      <tr><td>Queue</td><td>Item.lbr</td><td>RetailQueue</td><td>Inbound goods waiting to be received and processed at retail or delivery point</td></tr>
+      <tr><td>Activity</td><td>Item.lbr</td><td>Retail</td><td>Final delivery or retail processing step; represents last-mile or store receiving</td></tr>
+      <tr><td>Exit</td><td>Item.lbr</td><td>FulfilledOrders</td><td>Records fulfilled orders; cycle time from Create to Exit represents total order lead time</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="connections">
+  <h2>Connections</h2>
+  <ul>
+    <li>CustomerOrders (ItemOut) → WarehouseQueue (ItemIn)</li>
+    <li>WarehouseQueue (ItemOut) → Warehouse (ItemIn)</li>
+    <li>Warehouse (ItemOut) → TransportQueue (ItemIn)</li>
+    <li>TransportQueue (ItemOut) → Transport (ItemIn)</li>
+    <li>Transport (ItemOut) → RetailQueue (ItemIn)</li>
+    <li>RetailQueue (ItemOut) → Retail (ItemIn)</li>
+    <li>Retail (ItemOut) → FulfilledOrders (ItemIn)</li>
+  </ul>
+  </section>
+
+  <section class="key-parameters">
+  <h2>Key parameters</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+    <tbody>
+      <tr><td>Activity (Transport)</td><td>distribution / arg1</td><td>Constant or triangular (1-3 days)</td><td>Transit time between supply chain stages. This is often the largest component of total lead time and is typically modeled as a constant or slightly variable duration.</td></tr>
+      <tr><td>Activity (Warehouse)</td><td>distribution / arg1</td><td>Exponential or triangular (2-8 hours)</td><td>Order processing time at warehouse. Highly variable processing times cause queue buildup and increase order lead time variability.</td></tr>
+      <tr><td>Create</td><td>distribution / arg1</td><td>Poisson arrivals (exponential inter-arrival) or scheduled demand</td><td>Customer order arrival pattern. Seasonal or bursty demand causes temporary queue buildup at each stage.</td></tr>
+      <tr><td>Activity (Retail)</td><td>distribution / arg1</td><td>Constant or triangular (1-4 hours)</td><td>Receiving and processing time at final destination. Often much shorter than transport time but still contributes to total lead time.</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="common-mistakes">
+  <h2>Common mistakes</h2>
+  <ul>
+    <li>Modeling supply chain stages with constant (zero-variability) processing times — real supply chains have significant variability in picking, transport, and receiving times; constant times underestimate queue buildup and lead time variability</li>
+    <li>Not including Queue blocks between stages — items would flow straight through without buffering, preventing the model from capturing queuing and delay effects that are the primary source of supply chain variability</li>
+    <li>Treating the model as a single flow without modeling stockouts or capacity limits — if any stage has finite capacity (e.g., truck capacity), add Queue maximum capacity limits and handle overflow items explicitly</li>
+    <li>Using the same time units for all stages without conversion — warehouse operations may be in hours while transport is in days; ensure simulation time units are consistent or use time_convert tool to align</li>
+  </ul>
+  </section>
+
+  <section class="key-metrics">
+  <h2>What to measure</h2>
+  <ul>
+    <li>Total order lead time from placement to fulfillment (Create to Exit cycle time)</li>
+    <li>Stage-by-stage queue lengths (indicator of bottleneck location)</li>
+    <li>Utilization at each processing stage</li>
+    <li>On-time delivery rate (fraction of orders fulfilled within target lead time)</li>
+    <li>WIP inventory value at each stage (queue length * average item value)</li>
+  </ul>
+  </section>
+
+  <section class="variations">
+  <h2>Variations</h2>
+  <ul>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+  </ul>
+  </section>
+</main>
+</body>
+</html>

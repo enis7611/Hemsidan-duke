@@ -1,0 +1,149 @@
+<!--
+title: Simple Queue (M/M/1) | Duke Systems AB
+description: A single-server queuing system where items arrive randomly, wait in a queue, are processed by one server, and depart. This is the foundational discrete-event pattern for any service or processing system.
+lang: en
+robots: noindex, nofollow
+page-css:
+  .duke-table{width:100%;max-width:820px;margin:0 auto;border-collapse:collapse;font-size:0.92rem;}
+  .duke-table th{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);text-align:left;padding:0.75rem 1rem;border-bottom:2px solid var(--teal);}
+  .duke-table td{padding:0.75rem 1rem;border-bottom:1px solid var(--border);color:var(--navy);vertical-align:top;}
+  .duke-table tr:last-child td{border-bottom:none;}
+  .duke-table-wrap{overflow-x:auto;}
+-->
+<!-- ─── PRODUKT-HERO ─────────────────────────────────────── -->
+<section id="top" style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 45%,#2d7a7a 100%);padding:140px 0 80px;position:relative;overflow:hidden;">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <a href="/simulationsmcp/v1/guides/queuing/" style="display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--steel-lt);text-decoration:none;margin-bottom:1.5rem;">← Queuing Systems</a>
+    <div style="display:inline-flex;align-items:center;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <span style="font-size:2rem;">🧭</span>
+      <span class="section-label" style="color:var(--steel-lt);margin:0;">Queuing Systems</span>
+    </div>
+    <h1 style="color:#fff;margin-bottom:1.25rem;">Simple Queue (M/M/1)</h1>
+    <p style="font-size:1.15rem;color:rgba(255,255,255,0.8);max-width:640px;">A single-server queuing system where items arrive randomly, wait in a queue, are processed by one server, and depart. This is the foundational discrete-event pattern for any service or processing system.</p>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Queuing Systems</span>
+      <h2 style="color:var(--navy);">When to use this</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;">Modeling a single-server service point (cashier, machine, call agent)</li>
+      <li style="margin-bottom:0.6rem;">Analyzing waiting times and queue lengths under variable demand</li>
+      <li style="margin-bottom:0.6rem;">Estimating server utilization and throughput capacity</li>
+      <li style="margin-bottom:0.6rem;">Baseline model before adding complexity like multiple servers or priorities</li>
+      <li style="margin-bottom:0.6rem;">Teaching or demonstrating Little&#x27;s Law and queuing theory concepts</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Queuing Systems</span>
+      <h2 style="color:var(--navy);">Blocks</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+        <tbody><tr><td>Create</td><td>Item.lbr</td><td>Arrivals</td><td>Generates items (customers, jobs) according to an inter-arrival time distribution</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>WaitingLine</td><td>Buffers items when the server is busy; tracks queue length and wait time statistics</td></tr><tr><td>Activity</td><td>Item.lbr</td><td>Server</td><td>Processes one item at a time with a configurable service time distribution</td></tr><tr><td>Exit</td><td>Item.lbr</td><td>Departures</td><td>Removes items from the model and records throughput and cycle time statistics</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Queuing Systems</span>
+      <h2 style="color:#fff;">Connections</h2>
+    </div>
+    <div class="mcp-terminal reveal" style="background:rgba(0,0,0,0.4);max-width:720px;margin:0 auto;">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div>
+        <span class="terminal-title">Connections</span>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line"><span class="terminal-result">Arrivals (ItemOut) → WaitingLine (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">WaitingLine (ItemOut) → Server (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Server (ItemOut) → Departures (ItemIn)</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Queuing Systems</span>
+      <h2 style="color:var(--navy);">Key parameters</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+        <tbody><tr><td>Create</td><td>distribution / arg1</td><td>Exponential, mean=5 min</td><td>Inter-arrival time distribution. Exponential gives Poisson arrivals (M/M/1 assumption). Mean sets average time between arrivals.</td></tr><tr><td>Activity</td><td>distribution / arg1</td><td>Exponential, mean=4 min</td><td>Service time distribution. Mean must be less than mean inter-arrival time to keep utilization below 100%.</td></tr><tr><td>Queue</td><td>rankType</td><td>FIFO (0)</td><td>Item ranking rule. FIFO (first-in first-out) is standard for M/M/1. Change to attribute-based for priority queues.</td></tr><tr><td>Create</td><td>maxArrivals</td><td>0 (unlimited)</td><td>Maximum number of items to generate. Set to 0 for unlimited (steady-state runs). Limit for finite-population studies.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Queuing Systems</span>
+      <h2 style="color:var(--navy);">Common mistakes</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Forgetting to place a Queue before the Activity — without a Queue, items that arrive when the server is busy are destroyed rather than waiting, causing incorrect throughput and lost-item errors</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Setting server utilization at or above 100% (mean service time &gt;= mean inter-arrival time) — the queue grows without bound and the model never reaches steady state; always verify utilization = (mean service time / mean inter-arrival time) &lt; 1</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Running the simulation for too short a time — M/M/1 systems need a warm-up period before reaching steady state; results collected during transient phase are not representative</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Using a constant (fixed) inter-arrival time instead of exponential when modeling Poisson arrivals — constant arrivals prevent realistic queue buildup and underestimate wait times</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Queuing Systems</span>
+      <h2 style="color:#fff;">What to measure</h2>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Average queue length (WaitingLine block statistics)</p></div>
+      <div class="pillar reveal reveal-delay-2"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Average wait time in queue (WaitingLine block statistics)</p></div>
+      <div class="pillar reveal reveal-delay-3"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Server utilization percentage (Server block statistics)</p></div>
+      <div class="pillar reveal reveal-delay-4"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Throughput (items per time unit, from Departures block)</p></div>
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Average total cycle time (from Departures block)</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Queuing Systems</span>
+      <h2 style="color:var(--navy);">Variations</h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1"><div class="card-icon teal">🔀</div><h3>Finite queue (blocking)</h3><p>Set Queue maximum capacity to limit queue length; items that arrive when queue is full are rejected or redirected</p></div>
+      <div class="service-card reveal reveal-delay-2"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/queuing/multi-server/" style="color:inherit;text-decoration:none;">Multiple servers →</a></h3><p>Replace single Activity with Workstation (maxServers &gt; 1) or add parallel Activities with Select Item Out/In routing</p></div>
+      <div class="service-card reveal reveal-delay-3"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/queuing/priority-queue/" style="color:inherit;text-decoration:none;">Priority service →</a></h3><p>Add a Set block before Queue to assign priority attributes; change Queue rankType to attribute-based ranking</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ──────────────────────────────────────────────── -->
+<section style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 50%,#287070 100%);padding:80px 0;text-align:center;">
+  <div class="container" style="position:relative;z-index:2;">
+    <h2 style="color:#fff;margin-bottom:1rem;" data-sv="Behöver du hjälp med din modell?" data-en="Need help with your model?">Behöver du hjälp med din modell?</h2>
+    <p style="color:rgba(255,255,255,0.75);max-width:480px;margin:0 auto 2.5rem;" data-sv="Duke Systems har arbetat med ExtendSim sedan 1988." data-en="Duke Systems has worked with ExtendSim since 1988.">Duke Systems har arbetat med ExtendSim sedan 1988.</p>
+    <a href="/index.html#kontakt" class="btn btn-primary" data-sv="Berätta om ditt problem" data-en="Tell us about your problem">Berätta om ditt problem</a>
+  </div>
+</section>
+

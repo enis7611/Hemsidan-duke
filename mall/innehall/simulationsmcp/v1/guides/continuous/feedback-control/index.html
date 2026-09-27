@@ -1,0 +1,151 @@
+<!--
+title: Feedback Control System | Duke Systems AB
+description: A continuous-time feedback control loop modeled with Value library blocks. A setpoint is compared against a measured output to compute an error signal, which drives a controller that adjusts the process input to minimize the error. Models PID controllers, thermostats, or any closed-loop regulation system.
+lang: en
+robots: noindex, nofollow
+page-css:
+  .duke-table{width:100%;max-width:820px;margin:0 auto;border-collapse:collapse;font-size:0.92rem;}
+  .duke-table th{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);text-align:left;padding:0.75rem 1rem;border-bottom:2px solid var(--teal);}
+  .duke-table td{padding:0.75rem 1rem;border-bottom:1px solid var(--border);color:var(--navy);vertical-align:top;}
+  .duke-table tr:last-child td{border-bottom:none;}
+  .duke-table-wrap{overflow-x:auto;}
+-->
+<!-- ─── PRODUKT-HERO ─────────────────────────────────────── -->
+<section id="top" style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 45%,#2d7a7a 100%);padding:140px 0 80px;position:relative;overflow:hidden;">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <a href="/simulationsmcp/v1/guides/continuous/" style="display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--steel-lt);text-decoration:none;margin-bottom:1.5rem;">← Continuous (Value)</a>
+    <div style="display:inline-flex;align-items:center;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <span style="font-size:2rem;">🧭</span>
+      <span class="section-label" style="color:var(--steel-lt);margin:0;">Continuous (Value)</span>
+    </div>
+    <h1 style="color:#fff;margin-bottom:1.25rem;">Feedback Control System</h1>
+    <p style="font-size:1.15rem;color:rgba(255,255,255,0.8);max-width:640px;">A continuous-time feedback control loop modeled with Value library blocks. A setpoint is compared against a measured output to compute an error signal, which drives a controller that adjusts the process input to minimize the error. Models PID controllers, thermostats, or any closed-loop regulation system.</p>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Continuous (Value)</span>
+      <h2 style="color:var(--navy);">When to use this</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;">Modeling a closed-loop control system (thermostat, speed controller, inventory level controller)</li>
+      <li style="margin-bottom:0.6rem;">Analyzing control system stability, overshoot, and settling time</li>
+      <li style="margin-bottom:0.6rem;">Designing or tuning PID controller gains for a simulated process</li>
+      <li style="margin-bottom:0.6rem;">Modeling any system where an output is continuously measured and used to adjust an input</li>
+      <li style="margin-bottom:0.6rem;">Evaluating control system response to disturbances or setpoint changes</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Continuous (Value)</span>
+      <h2 style="color:var(--navy);">Blocks</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+        <tbody><tr><td>Constant</td><td>Value.lbr</td><td>Setpoint</td><td>Provides the desired target value (setpoint) that the controller tries to achieve</td></tr><tr><td>Math</td><td>Value.lbr</td><td>ErrorCalc</td><td>Computes the error signal as (Setpoint - MeasuredOutput); provides the feedback comparison</td></tr><tr><td>Equation</td><td>Value.lbr</td><td>Controller</td><td>Implements the control law (proportional, integral, or PID); takes error as input and outputs control action</td></tr><tr><td>Holding Tank</td><td>Value.lbr</td><td>Process</td><td>Integrates the control action over time to produce the process output (state variable); represents system dynamics</td></tr><tr><td>Equation</td><td>Value.lbr</td><td>FeedbackSensor</td><td>Reads the current Holding Tank level (process output) and feeds it back to the ErrorCalc block to close the loop</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Continuous (Value)</span>
+      <h2 style="color:#fff;">Connections</h2>
+    </div>
+    <div class="mcp-terminal reveal" style="background:rgba(0,0,0,0.4);max-width:720px;margin:0 auto;">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div>
+        <span class="terminal-title">Connections</span>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line"><span class="terminal-result">Setpoint (V) → ErrorCalc (V[0])</span></div>
+        <div class="terminal-line"><span class="terminal-result">FeedbackSensor (V) → ErrorCalc (V[1])</span></div>
+        <div class="terminal-line"><span class="terminal-result">ErrorCalc (V) → Controller (V)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Controller (V) → Process (FlowIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Process (V) → FeedbackSensor (V)</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Continuous (Value)</span>
+      <h2 style="color:var(--navy);">Key parameters</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+        <tbody><tr><td>Constant (Setpoint)</td><td>value</td><td>100 (target level, temperature, speed, etc.)</td><td>The desired steady-state value the controller attempts to maintain. The controller drives error (Setpoint - Output) toward zero.</td></tr><tr><td>Equation (Controller)</td><td>equation</td><td>Kp * e (proportional only) or Kp*e + Ki*integral(e) + Kd*derivative(e)</td><td>The control law. Proportional-only (Kp*e) is simplest but may have steady-state offset. Add integral term (Ki) to eliminate offset. Add derivative term (Kd) to reduce overshoot. Typical Kp=1-10, Ki=0.01-0.1, Kd=0-1.</td></tr><tr><td>Holding Tank</td><td>capacity / initialLevel</td><td>capacity=1000, initialLevel=0 (or near setpoint)</td><td>The Holding Tank acts as an integrator: its level changes at the rate set by the inflow (control action). Initial level sets the starting condition. Capacity must be large enough to accommodate the full operating range.</td></tr><tr><td>Math</td><td>equation (error = setpoint - feedback)</td><td>V[0] - V[1]</td><td>The error signal. Positive error means output is below setpoint (controller should increase input). Negative error means output is above setpoint (controller should decrease input or flow is reversed).</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Continuous (Value)</span>
+      <h2 style="color:var(--navy);">Common mistakes</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Forgetting to close the feedback loop by connecting the Holding Tank output back to the ErrorCalc block — without this connection the model is open-loop (no feedback); the output will drift without correction and the controller has no effect</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Setting controller gain Kp too high — proportional gains that are too large cause oscillation or instability; start with a low gain (Kp=0.1) and increase gradually while observing the step response in the Holding Tank level</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Using Equation block instead of Holding Tank for the process state — the process must be a dynamic element (integrator) to have meaningful control dynamics; an Equation block computes an algebraic (instantaneous) value, not a time-integrated state, which eliminates the dynamics the controller is designed to regulate</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Not accounting for the sign of the feedback — if the Math block computes (Feedback - Setpoint) instead of (Setpoint - Feedback), the error signal is inverted and the controller drives the output in the wrong direction, causing instability; always verify error = setpoint minus measured output</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Continuous (Value)</span>
+      <h2 style="color:#fff;">What to measure</h2>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Settling time: time for Process output to reach within 5% of setpoint</p></div>
+      <div class="pillar reveal reveal-delay-2"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Overshoot: peak deviation above setpoint as percentage of setpoint value</p></div>
+      <div class="pillar reveal reveal-delay-3"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Steady-state error: remaining error after system settles (should be near zero with integral control)</p></div>
+      <div class="pillar reveal reveal-delay-4"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Rise time: time for output to go from 10% to 90% of final value</p></div>
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Control effort: magnitude and variability of Controller output signal</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Continuous (Value)</span>
+      <h2 style="color:var(--navy);">Variations</h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1"><div class="card-icon teal">🔀</div><h3>Proportional only (P controller)</h3><p>Set Controller equation to Kp * error; accept small steady-state offset in exchange for simplicity and stability</p></div>
+      <div class="service-card reveal reveal-delay-2"><div class="card-icon teal">🔀</div><h3>PI controller (eliminate offset)</h3><p>Add a second Holding Tank to integrate the error signal; add Ki * integral_error term to Controller equation to eliminate steady-state error</p></div>
+      <div class="service-card reveal reveal-delay-3"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/flow/tank-system/" style="color:inherit;text-decoration:none;">Tank level control →</a></h3><p>Replace the Holding Tank Process block with actual Rate.lbr Tank+Valve blocks; feed Controller output to Valve goal connector to regulate tank level at setpoint</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ──────────────────────────────────────────────── -->
+<section style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 50%,#287070 100%);padding:80px 0;text-align:center;">
+  <div class="container" style="position:relative;z-index:2;">
+    <h2 style="color:#fff;margin-bottom:1rem;" data-sv="Behöver du hjälp med din modell?" data-en="Need help with your model?">Behöver du hjälp med din modell?</h2>
+    <p style="color:rgba(255,255,255,0.75);max-width:480px;margin:0 auto 2.5rem;" data-sv="Duke Systems har arbetat med ExtendSim sedan 1988." data-en="Duke Systems has worked with ExtendSim since 1988.">Duke Systems har arbetat med ExtendSim sedan 1988.</p>
+    <a href="/index.html#kontakt" class="btn btn-primary" data-sv="Berätta om ditt problem" data-en="Tell us about your problem">Berätta om ditt problem</a>
+  </div>
+</section>
+

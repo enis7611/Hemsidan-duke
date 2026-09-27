@@ -1,0 +1,153 @@
+<!--
+title: Batch Assembly (Two-Component) | Duke Systems AB
+description: An assembly model where two separate component streams must be joined before the assembly operation. A Batch block holds components until one of each type is available, then combines them for processing. Models kitting, assembly, or any multi-input synchronization.
+lang: en
+robots: noindex, nofollow
+page-css:
+  .duke-table{width:100%;max-width:820px;margin:0 auto;border-collapse:collapse;font-size:0.92rem;}
+  .duke-table th{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);text-align:left;padding:0.75rem 1rem;border-bottom:2px solid var(--teal);}
+  .duke-table td{padding:0.75rem 1rem;border-bottom:1px solid var(--border);color:var(--navy);vertical-align:top;}
+  .duke-table tr:last-child td{border-bottom:none;}
+  .duke-table-wrap{overflow-x:auto;}
+-->
+<!-- ─── PRODUKT-HERO ─────────────────────────────────────── -->
+<section id="top" style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 45%,#2d7a7a 100%);padding:140px 0 80px;position:relative;overflow:hidden;">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <a href="/simulationsmcp/v1/guides/manufacturing/" style="display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--steel-lt);text-decoration:none;margin-bottom:1.5rem;">← Manufacturing</a>
+    <div style="display:inline-flex;align-items:center;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <span style="font-size:2rem;">🧭</span>
+      <span class="section-label" style="color:var(--steel-lt);margin:0;">Manufacturing</span>
+    </div>
+    <h1 style="color:#fff;margin-bottom:1.25rem;">Batch Assembly (Two-Component)</h1>
+    <p style="font-size:1.15rem;color:rgba(255,255,255,0.8);max-width:640px;">An assembly model where two separate component streams must be joined before the assembly operation. A Batch block holds components until one of each type is available, then combines them for processing. Models kitting, assembly, or any multi-input synchronization.</p>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Manufacturing</span>
+      <h2 style="color:var(--navy);">When to use this</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;">Modeling an assembly operation that requires one item from each of two or more component streams</li>
+      <li style="margin-bottom:0.6rem;">Synchronizing multiple input streams before a combined processing step</li>
+      <li style="margin-bottom:0.6rem;">Analyzing the impact of component imbalance on assembly throughput and WIP</li>
+      <li style="margin-bottom:0.6rem;">Modeling kitting operations where a kit of parts must be assembled before production begins</li>
+      <li style="margin-bottom:0.6rem;">Any scenario where items from multiple sources must be matched before proceeding</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Manufacturing</span>
+      <h2 style="color:var(--navy);">Blocks</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+        <tbody><tr><td>Create</td><td>Item.lbr</td><td>ComponentA</td><td>Generates component A items at the production or arrival rate for stream A</td></tr><tr><td>Create</td><td>Item.lbr</td><td>ComponentB</td><td>Generates component B items at the production or arrival rate for stream B</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>BufferA</td><td>Holds component A items waiting to be matched with a component B item for batching</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>BufferB</td><td>Holds component B items waiting to be matched with a component A item for batching</td></tr><tr><td>Batch</td><td>Item.lbr</td><td>Assembler</td><td>Collects one item from each connected input Queue and combines them into a single batched item for downstream processing</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>AssemblyQueue</td><td>Holds batched items waiting for the assembly Activity</td></tr><tr><td>Activity</td><td>Item.lbr</td><td>Assembly</td><td>Performs the assembly operation on the combined batch item</td></tr><tr><td>Exit</td><td>Item.lbr</td><td>FinishedProduct</td><td>Collects completed assemblies and records throughput</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Manufacturing</span>
+      <h2 style="color:#fff;">Connections</h2>
+    </div>
+    <div class="mcp-terminal reveal" style="background:rgba(0,0,0,0.4);max-width:720px;margin:0 auto;">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div>
+        <span class="terminal-title">Connections</span>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line"><span class="terminal-result">ComponentA (ItemOut) → BufferA (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">ComponentB (ItemOut) → BufferB (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">BufferA (ItemOut) → Assembler (ItemIn[0])</span></div>
+        <div class="terminal-line"><span class="terminal-result">BufferB (ItemOut) → Assembler (ItemIn[1])</span></div>
+        <div class="terminal-line"><span class="terminal-result">Assembler (ItemOut) → AssemblyQueue (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">AssemblyQueue (ItemOut) → Assembly (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Assembly (ItemOut) → FinishedProduct (ItemIn)</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Manufacturing</span>
+      <h2 style="color:var(--navy);">Key parameters</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+        <tbody><tr><td>Batch</td><td>batchSize / batchType</td><td>batchSize=1 per input (permanent batch of N=2), batchType=permanent</td><td>For assembly, use permanent batching (components are permanently combined). batchSize typically 1 per input connector. Temporary batching groups items that will be unbatched later.</td></tr><tr><td>Create (ComponentA)</td><td>distribution / arg1</td><td>Exponential, mean=3 min</td><td>Component A arrival rate. If rate differs significantly from component B, the slower stream becomes the bottleneck and the faster stream builds up in its buffer.</td></tr><tr><td>Create (ComponentB)</td><td>distribution / arg1</td><td>Exponential, mean=3 min</td><td>Component B arrival rate. Ideally balanced with component A rate. Imbalance causes one buffer to grow without bound.</td></tr><tr><td>Batch</td><td>matchAttribute</td><td>null (no matching) or attribute name</td><td>If components must be matched by a specific attribute (e.g., serial number or order ID), set matchAttribute. Without matching, Batch combines any available item from each input.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Manufacturing</span>
+      <h2 style="color:var(--navy);">Common mistakes</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Connecting component Create blocks directly to the Batch block without Queue buffers — the Batch block needs Queue blocks on each input because it pulls from Queue outputs, not directly from Create outputs; without Queues, components cannot accumulate and Batch will stall</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Setting mismatched component arrival rates and not accounting for the resulting buffer imbalance — if component A arrives twice as fast as component B, the BufferA will grow indefinitely while BufferB stays near empty; always balance mean arrival rates across all component streams</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Using temporary batch mode when permanent assembly is intended — temporary batching allows items to be unbatched later (via Unbatch block), which is wrong for assembly; use permanent batch mode when components are physically combined</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Expecting Batch block throughput to exceed the rate of the slowest component stream — the assembly rate is limited by min(rateA, rateB); adding more Assembly Activities downstream cannot compensate for a slow component supplier</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Manufacturing</span>
+      <h2 style="color:#fff;">What to measure</h2>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Assembly throughput (limited by slower component stream)</p></div>
+      <div class="pillar reveal reveal-delay-2"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Buffer length for each component stream (imbalance indicator)</p></div>
+      <div class="pillar reveal reveal-delay-3"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Batch wait time (how long until matching component arrives)</p></div>
+      <div class="pillar reveal reveal-delay-4"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Assembly Activity utilization</p></div>
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>WIP ratio between BufferA and BufferB (large ratio indicates flow imbalance)</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Manufacturing</span>
+      <h2 style="color:var(--navy);">Variations</h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1"><div class="card-icon teal">🔀</div><h3>Three-component assembly</h3><p>Add a third Create+Queue pair; connect third Queue to Batch third input. Batch waits for one item from each of three inputs before releasing</p></div>
+      <div class="service-card reveal reveal-delay-2"><div class="card-icon teal">🔀</div><h3>Variable batch size</h3><p>Collect N identical items before processing (e.g., packaging): single Create→Queue→Batch with batchSize=N from one input</p></div>
+      <div class="service-card reveal reveal-delay-3"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/manufacturing/serial-line/" style="color:inherit;text-decoration:none;">With serial line downstream →</a></h3><p>Route assembled items through multiple processing stages after the Batch+Assembly step for post-assembly operations</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ──────────────────────────────────────────────── -->
+<section style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 50%,#287070 100%);padding:80px 0;text-align:center;">
+  <div class="container" style="position:relative;z-index:2;">
+    <h2 style="color:#fff;margin-bottom:1rem;" data-sv="Behöver du hjälp med din modell?" data-en="Need help with your model?">Behöver du hjälp med din modell?</h2>
+    <p style="color:rgba(255,255,255,0.75);max-width:480px;margin:0 auto 2.5rem;" data-sv="Duke Systems har arbetat med ExtendSim sedan 1988." data-en="Duke Systems has worked with ExtendSim since 1988.">Duke Systems har arbetat med ExtendSim sedan 1988.</p>
+    <a href="/index.html#kontakt" class="btn btn-primary" data-sv="Berätta om ditt problem" data-en="Tell us about your problem">Berätta om ditt problem</a>
+  </div>
+</section>
+

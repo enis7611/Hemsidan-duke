@@ -1,0 +1,154 @@
+<!--
+title: Shared Resources | Duke Systems AB
+description: Multiple processes compete for a limited pool of shared resources (operators, tools, vehicles). Each process requests resources when needed, uses them during processing, and releases them for other processes to use.
+lang: en
+robots: noindex, nofollow
+page-css:
+  .duke-table{width:100%;max-width:820px;margin:0 auto;border-collapse:collapse;font-size:0.92rem;}
+  .duke-table th{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);text-align:left;padding:0.75rem 1rem;border-bottom:2px solid var(--teal);}
+  .duke-table td{padding:0.75rem 1rem;border-bottom:1px solid var(--border);color:var(--navy);vertical-align:top;}
+  .duke-table tr:last-child td{border-bottom:none;}
+  .duke-table-wrap{overflow-x:auto;}
+-->
+<!-- ─── PRODUKT-HERO ─────────────────────────────────────── -->
+<section id="top" style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 45%,#2d7a7a 100%);padding:140px 0 80px;position:relative;overflow:hidden;">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <a href="/simulationsmcp/v1/guides/resources/" style="display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--steel-lt);text-decoration:none;margin-bottom:1.5rem;">← Resource Management</a>
+    <div style="display:inline-flex;align-items:center;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <span style="font-size:2rem;">🧭</span>
+      <span class="section-label" style="color:var(--steel-lt);margin:0;">Resource Management</span>
+    </div>
+    <h1 style="color:#fff;margin-bottom:1.25rem;">Shared Resources</h1>
+    <p style="font-size:1.15rem;color:rgba(255,255,255,0.8);max-width:640px;">Multiple processes compete for a limited pool of shared resources (operators, tools, vehicles). Each process requests resources when needed, uses them during processing, and releases them for other processes to use.</p>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Resource Management</span>
+      <h2 style="color:var(--navy);">When to use this</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;">Modeling operators, technicians, or vehicles shared across multiple production lines or service points</li>
+      <li style="margin-bottom:0.6rem;">Analyzing resource contention and its impact on throughput and waiting time</li>
+      <li style="margin-bottom:0.6rem;">Determining the minimum number of shared resources to achieve a target utilization or wait time</li>
+      <li style="margin-bottom:0.6rem;">Modeling tool cribs, forklifts, or test equipment shared by multiple work centers</li>
+      <li style="margin-bottom:0.6rem;">Any scenario where a finite pool of resources is the primary constraint on system throughput</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Resource Management</span>
+      <h2 style="color:var(--navy);">Blocks</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+        <tbody><tr><td>Create</td><td>Item.lbr</td><td>ArrivalsA</td><td>Generates items for process A that will compete for shared resources</td></tr><tr><td>Create</td><td>Item.lbr</td><td>ArrivalsB</td><td>Generates items for process B that will also compete for the same shared resource pool</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>QueueA</td><td>Holds process A items waiting for resource availability; wait time reflects resource contention</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>QueueB</td><td>Holds process B items waiting for resource availability from the same pool</td></tr><tr><td>Activity</td><td>Item.lbr</td><td>ProcessA</td><td>Process A activity; requests and holds resources from the Resource Pool during processing</td></tr><tr><td>Activity</td><td>Item.lbr</td><td>ProcessB</td><td>Process B activity; competes with Process A for resources from the same Resource Pool</td></tr><tr><td>Resource Pool</td><td>Item.lbr</td><td>SharedPool</td><td>Defines the total number of available shared resources; Activity blocks request from and release to this pool</td></tr><tr><td>Exit</td><td>Item.lbr</td><td>CompletedA</td><td>Collects completed process A items</td></tr><tr><td>Exit</td><td>Item.lbr</td><td>CompletedB</td><td>Collects completed process B items</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Resource Management</span>
+      <h2 style="color:#fff;">Connections</h2>
+    </div>
+    <div class="mcp-terminal reveal" style="background:rgba(0,0,0,0.4);max-width:720px;margin:0 auto;">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div>
+        <span class="terminal-title">Connections</span>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line"><span class="terminal-result">ArrivalsA (ItemOut) → QueueA (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">QueueA (ItemOut) → ProcessA (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">ProcessA (ItemOut) → CompletedA (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">ArrivalsB (ItemOut) → QueueB (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">QueueB (ItemOut) → ProcessB (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">ProcessB (ItemOut) → CompletedB (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">SharedPool (Resource) → QueueA (Resource request)</span></div>
+        <div class="terminal-line"><span class="terminal-result">SharedPool (Resource) → QueueB (Resource request)</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Resource Management</span>
+      <h2 style="color:var(--navy);">Key parameters</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+        <tbody><tr><td>Resource Pool</td><td>initialResources</td><td>2-5 (start with theoretical minimum, then increase)</td><td>Total number of available shared resources. This is the key decision variable. Too few causes excessive waiting; too many wastes capacity.</td></tr><tr><td>Queue</td><td>resourcePoolBlockId / resourcesNeeded</td><td>resourcePoolBlockId = ID of SharedPool, resourcesNeeded = 1</td><td>Each Queue must be linked to the Resource Pool. Items wait in queue until both a downstream Activity is free AND the required number of resources are available.</td></tr><tr><td>Activity (ProcessA)</td><td>distribution / arg1</td><td>Triangular(5, 10, 20) min</td><td>Resource holding time. Resources are held for the entire activity duration, so longer service times mean resources are unavailable to other processes for longer.</td></tr><tr><td>Resource Pool</td><td>allocationRule</td><td>FIFO or priority-based</td><td>Rule for allocating resources when multiple queues compete. FIFO allocates to the longest-waiting request. Priority allocation favors higher-priority processes.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Resource Management</span>
+      <h2 style="color:var(--navy);">Common mistakes</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Forgetting to link the Queue block to the Resource Pool — in ExtendSim, the Queue block (not the Activity block) requests resources; if the Queue&#x27;s resourcePoolBlockId is not set, resources are never requested and items flow through without resource constraint</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Connecting the Resource Pool directly to the Activity block instead of to the Queue block — resources must be requested at the Queue so items wait for both server availability AND resource availability; resource request at Activity happens too late</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Setting resourcesNeeded to a number larger than initialResources — if any process needs more resources than exist in the pool, those items will wait forever and the simulation will deadlock</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Not including a Queue block before each Activity when using Resource Pool — without a Queue, the resource request linkage cannot be established and resources will not be properly requested or released</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Resource Management</span>
+      <h2 style="color:#fff;">What to measure</h2>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Resource pool utilization (average fraction of resources in use)</p></div>
+      <div class="pillar reveal reveal-delay-2"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Average wait time in each queue due to resource unavailability</p></div>
+      <div class="pillar reveal reveal-delay-3"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Average queue length for each process (resource contention indicator)</p></div>
+      <div class="pillar reveal reveal-delay-4"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Throughput of each process versus arrival rate</p></div>
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Resource allocation fairness across competing processes</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Resource Management</span>
+      <h2 style="color:var(--navy);">Variations</h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/queuing/priority-queue/" style="color:inherit;text-decoration:none;">Priority resource allocation →</a></h3><p>Set Queue allocationRule to priority-based and assign priority attributes to items; high-priority items get resources before low-priority items when pool is contended</p></div>
+      <div class="service-card reveal reveal-delay-2"><div class="card-icon teal">🔀</div><h3>Multiple resource types</h3><p>Add a second Resource Pool for a different resource type (e.g., operator pool + tool pool); Queue requests resources from both pools simultaneously</p></div>
+      <div class="service-card reveal reveal-delay-3"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/resources/shift-schedule/" style="color:inherit;text-decoration:none;">With shift schedule →</a></h3><p>Add Shift block to Resource Pool to vary resource availability over time (e.g., more operators during day shift than night shift)</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ──────────────────────────────────────────────── -->
+<section style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 50%,#287070 100%);padding:80px 0;text-align:center;">
+  <div class="container" style="position:relative;z-index:2;">
+    <h2 style="color:#fff;margin-bottom:1rem;" data-sv="Behöver du hjälp med din modell?" data-en="Need help with your model?">Behöver du hjälp med din modell?</h2>
+    <p style="color:rgba(255,255,255,0.75);max-width:480px;margin:0 auto 2.5rem;" data-sv="Duke Systems har arbetat med ExtendSim sedan 1988." data-en="Duke Systems has worked with ExtendSim since 1988.">Duke Systems har arbetat med ExtendSim sedan 1988.</p>
+    <a href="/index.html#kontakt" class="btn btn-primary" data-sv="Berätta om ditt problem" data-en="Tell us about your problem">Berätta om ditt problem</a>
+  </div>
+</section>
+

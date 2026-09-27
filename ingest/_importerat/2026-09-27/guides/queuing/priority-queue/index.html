@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Priority Queue</title>
+<meta name="description" content="A queuing system where items are served in priority order rather than arrival order. High-priority items jump ahead of lower-priority items in the queue, modeling emergency services, VIP lanes, or job scheduling with urgency levels.">
+</head>
+<body>
+<main class="guide-content">
+  <nav class="breadcrumb"><a href="/guides/">Guides</a> / <a href="/guides/queuing/">Queuing Systems</a></nav>
+  <h1>Priority Queue</h1>
+  <p class="summary">A queuing system where items are served in priority order rather than arrival order. High-priority items jump ahead of lower-priority items in the queue, modeling emergency services, VIP lanes, or job scheduling with urgency levels.</p>
+
+  <section class="use-when">
+  <h2>When to use this</h2>
+  <ul>
+    <li>Modeling systems where certain customers or jobs must be served before others regardless of arrival order</li>
+    <li>Evaluating the impact of priority classes on wait time distribution across customer segments</li>
+    <li>Modeling preemptive or non-preemptive service disciplines in computer or manufacturing systems</li>
+    <li>Designing triage systems in healthcare, emergency response, or critical systems</li>
+    <li>Analyzing fairness trade-offs: high-priority items get fast service but low-priority items may wait excessively</li>
+  </ul>
+  </section>
+
+  <section class="blocks">
+  <h2>Blocks</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Create</td><td>Item.lbr</td><td>Arrivals</td><td>Generates all arriving items; may use multiple Create blocks for different priority classes</td></tr>
+      <tr><td>Set</td><td>Item.lbr</td><td>AssignPriority</td><td>Assigns a numeric priority attribute value to each item (e.g., 1=high, 3=low); attribute name must match Queue sort attribute</td></tr>
+      <tr><td>Queue</td><td>Item.lbr</td><td>PriorityQueue</td><td>Ranks waiting items by attribute value; lower attribute value = higher priority when ascending sort is used</td></tr>
+      <tr><td>Activity</td><td>Item.lbr</td><td>Server</td><td>Processes items one at a time; always takes the highest-priority item from the Queue</td></tr>
+      <tr><td>Exit</td><td>Item.lbr</td><td>Departures</td><td>Collects items and records statistics; add separate Exit blocks per priority class for segmented analysis</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="connections">
+  <h2>Connections</h2>
+  <ul>
+    <li>Arrivals (ItemOut) → AssignPriority (ItemIn)</li>
+    <li>AssignPriority (ItemOut) → PriorityQueue (ItemIn)</li>
+    <li>PriorityQueue (ItemOut) → Server (ItemIn)</li>
+    <li>Server (ItemOut) → Departures (ItemIn)</li>
+  </ul>
+  </section>
+
+  <section class="key-parameters">
+  <h2>Key parameters</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+    <tbody>
+      <tr><td>Set</td><td>attributeName / value</td><td>attribute='priority', value=1 (high) or 3 (low)</td><td>The attribute name used for ranking must exactly match the Queue's sort attribute name. Use lower numbers for higher priority with ascending sort.</td></tr>
+      <tr><td>Queue</td><td>rankType / sortAttribute / ascending</td><td>rankType=attribute, sortAttribute='priority', ascending=true</td><td>Set rankType to attribute-based, specify the attribute name, and set ascending=true so items with smallest attribute value (highest priority) are served first.</td></tr>
+      <tr><td>Create</td><td>distribution / arg1</td><td>Multiple Create blocks with different rates per priority class</td><td>Use one Create block per priority class, each with its own inter-arrival distribution, to control the mix of priority levels.</td></tr>
+      <tr><td>Activity</td><td>distribution / arg1</td><td>Exponential, mean=4 min</td><td>Service time is typically the same regardless of priority (non-preemptive discipline). Preemptive requires custom logic.</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="common-mistakes">
+  <h2>Common mistakes</h2>
+  <ul>
+    <li>Setting the Queue sort attribute name that does not exactly match the attribute name assigned by the Set block — the Queue will not recognize the attribute and will default to FIFO, silently ignoring priorities; attribute names are case-sensitive</li>
+    <li>Using ascending sort with higher numbers meaning higher priority — this sorts backwards; either use lower numbers for higher priority with ascending=true, or use descending=true with higher numbers for higher priority</li>
+    <li>Using a single Create block and trying to assign priorities probabilistically inside one Set block — it is cleaner and more accurate to use separate Create blocks with different rates for each priority class so arrival rates are independently controlled</li>
+    <li>Omitting the Set block and trying to assign priority in the Create block itself — Create block does not support attribute assignment; a Set block immediately after Create is required</li>
+  </ul>
+  </section>
+
+  <section class="key-metrics">
+  <h2>What to measure</h2>
+  <ul>
+    <li>Average wait time per priority class (use separate Exit blocks or attribute-filtered statistics)</li>
+    <li>Queue length breakdown by priority level</li>
+    <li>Server utilization (shared across all priority classes)</li>
+    <li>Probability low-priority items wait longer than acceptable threshold</li>
+    <li>Throughput per priority class versus arrival rate</li>
+  </ul>
+  </section>
+
+  <section class="variations">
+  <h2>Variations</h2>
+  <ul>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+  </ul>
+  </section>
+</main>
+</body>
+</html>

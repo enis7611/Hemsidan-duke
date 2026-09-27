@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tank Pipeline System</title>
+<meta name="description" content="A continuous flow model using Rate library blocks where material flows through a series of tanks connected by valves. Each tank stores fluid volume and each valve controls flow rate between tanks. Models liquid pipelines, chemical processes, or any continuous fluid system.">
+</head>
+<body>
+<main class="guide-content">
+  <nav class="breadcrumb"><a href="/guides/">Guides</a> / <a href="/guides/flow/">Continuous Flow (Rate)</a></nav>
+  <h1>Tank Pipeline System</h1>
+  <p class="summary">A continuous flow model using Rate library blocks where material flows through a series of tanks connected by valves. Each tank stores fluid volume and each valve controls flow rate between tanks. Models liquid pipelines, chemical processes, or any continuous fluid system.</p>
+
+  <section class="use-when">
+  <h2>When to use this</h2>
+  <ul>
+    <li>Modeling continuous fluid or material flow (liquids, gases, bulk solids, chemicals)</li>
+    <li>Analyzing tank levels, overflow conditions, and flow rates in a pipeline</li>
+    <li>Simulating filling, draining, and steady-state flow in multi-tank systems</li>
+    <li>Modeling hydraulic systems, water distribution networks, or chemical processing</li>
+    <li>Any scenario where the quantity of interest is a continuously changing volume or rate</li>
+  </ul>
+  </section>
+
+  <section class="blocks">
+  <h2>Blocks</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Tank</td><td>Rate.lbr</td><td>SourceTank</td><td>First tank in the pipeline; represents the source or supply reservoir with initial fluid level</td></tr>
+      <tr><td>Valve</td><td>Rate.lbr</td><td>Valve1</td><td>Controls flow rate from SourceTank to MidTank; rate can be fixed or controlled by a Value connector</td></tr>
+      <tr><td>Tank</td><td>Rate.lbr</td><td>MidTank</td><td>Intermediate storage tank; level rises or falls based on inflow from Valve1 versus outflow through Valve2</td></tr>
+      <tr><td>Valve</td><td>Rate.lbr</td><td>Valve2</td><td>Controls flow rate from MidTank to SinkTank; enables independent control of each pipeline segment</td></tr>
+      <tr><td>Tank</td><td>Rate.lbr</td><td>SinkTank</td><td>Terminal receiving tank; accumulates material flowing through the system</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="connections">
+  <h2>Connections</h2>
+  <ul>
+    <li>SourceTank (FlowOut) → Valve1 (FlowIn)</li>
+    <li>Valve1 (FlowOut) → MidTank (FlowIn)</li>
+    <li>MidTank (FlowOut) → Valve2 (FlowIn)</li>
+    <li>Valve2 (FlowOut) → SinkTank (FlowIn)</li>
+  </ul>
+  </section>
+
+  <section class="key-parameters">
+  <h2>Key parameters</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+    <tbody>
+      <tr><td>Tank</td><td>capacity / initialLevel</td><td>capacity=1000 units, initialLevel=500 units (50% full)</td><td>Tank capacity sets the maximum volume. Initial level determines starting conditions. When level hits capacity, tank overflows; when level hits 0, tank empties and downstream valves close automatically.</td></tr>
+      <tr><td>Valve</td><td>maxRate / goal</td><td>maxRate=100 units/hour, goal=100 (constant flow)</td><td>maxRate sets the maximum possible flow rate. goal sets the desired flow rate. Actual flow is min(goal, available flow from upstream, capacity in downstream). Connect a Value connector to goal for dynamic control.</td></tr>
+      <tr><td>Tank</td><td>maxInputRate / maxOutputRate</td><td>0 (unlimited) or pipe capacity limit</td><td>Physical rate limits at the tank inlet and outlet. Set to 0 to allow unlimited flow rate (limited only by connected valves). Use to model pipe capacity constraints.</td></tr>
+      <tr><td>Valve</td><td>goal (via Value connector)</td><td>Equation block output or Constant block</td><td>For dynamic valve control, connect an Equation or Constant Value.lbr block to the Valve goal connector. This enables level-based control, schedules, or feedback regulation.</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="common-mistakes">
+  <h2>Common mistakes</h2>
+  <ul>
+    <li>Mixing Rate.lbr blocks with Item.lbr blocks in the same flow path — Tank and Valve are Rate library blocks and connect via flow connectors (not item connectors); attempting to connect a Create or Activity block directly to a Tank will fail; keep discrete item flow and continuous flow in separate model sections</li>
+    <li>Setting Valve maxRate higher than the Tank's maxOutputRate or the upstream Tank's available volume — the valve cannot push more flow than physically possible; actual flow is always limited by the most constrained element in the path</li>
+    <li>Not setting initial Tank levels — if all tanks start empty and the source tank has no inflow, the model starts with zero flow; set SourceTank initialLevel to a realistic starting value to avoid a trivially empty simulation</li>
+    <li>Forgetting that when a Tank empties, downstream valves automatically reduce to zero flow — this is correct physical behavior but can be mistaken for a model error; verify tank levels before investigating unexpected flow shutdowns</li>
+  </ul>
+  </section>
+
+  <section class="key-metrics">
+  <h2>What to measure</h2>
+  <ul>
+    <li>Tank level over time for each tank (fill/drain curves)</li>
+    <li>Flow rate through each valve (actual versus requested)</li>
+    <li>Time to empty or fill each tank under current flow rates</li>
+    <li>Overflow events (when any tank reaches capacity)</li>
+    <li>Steady-state flow rate through the system (when inflow equals outflow)</li>
+  </ul>
+  </section>
+
+  <section class="variations">
+  <h2>Variations</h2>
+  <ul>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+  </ul>
+  </section>
+</main>
+</body>
+</html>

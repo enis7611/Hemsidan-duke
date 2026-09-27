@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simple Queue (M/M/1)</title>
+<meta name="description" content="A single-server queuing system where items arrive randomly, wait in a queue, are processed by one server, and depart. This is the foundational discrete-event pattern for any service or processing system.">
+</head>
+<body>
+<main class="guide-content">
+  <nav class="breadcrumb"><a href="/guides/">Guides</a> / <a href="/guides/queuing/">Queuing Systems</a></nav>
+  <h1>Simple Queue (M/M/1)</h1>
+  <p class="summary">A single-server queuing system where items arrive randomly, wait in a queue, are processed by one server, and depart. This is the foundational discrete-event pattern for any service or processing system.</p>
+
+  <section class="use-when">
+  <h2>When to use this</h2>
+  <ul>
+    <li>Modeling a single-server service point (cashier, machine, call agent)</li>
+    <li>Analyzing waiting times and queue lengths under variable demand</li>
+    <li>Estimating server utilization and throughput capacity</li>
+    <li>Baseline model before adding complexity like multiple servers or priorities</li>
+    <li>Teaching or demonstrating Little's Law and queuing theory concepts</li>
+  </ul>
+  </section>
+
+  <section class="blocks">
+  <h2>Blocks</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Create</td><td>Item.lbr</td><td>Arrivals</td><td>Generates items (customers, jobs) according to an inter-arrival time distribution</td></tr>
+      <tr><td>Queue</td><td>Item.lbr</td><td>WaitingLine</td><td>Buffers items when the server is busy; tracks queue length and wait time statistics</td></tr>
+      <tr><td>Activity</td><td>Item.lbr</td><td>Server</td><td>Processes one item at a time with a configurable service time distribution</td></tr>
+      <tr><td>Exit</td><td>Item.lbr</td><td>Departures</td><td>Removes items from the model and records throughput and cycle time statistics</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="connections">
+  <h2>Connections</h2>
+  <ul>
+    <li>Arrivals (ItemOut) → WaitingLine (ItemIn)</li>
+    <li>WaitingLine (ItemOut) → Server (ItemIn)</li>
+    <li>Server (ItemOut) → Departures (ItemIn)</li>
+  </ul>
+  </section>
+
+  <section class="key-parameters">
+  <h2>Key parameters</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+    <tbody>
+      <tr><td>Create</td><td>distribution / arg1</td><td>Exponential, mean=5 min</td><td>Inter-arrival time distribution. Exponential gives Poisson arrivals (M/M/1 assumption). Mean sets average time between arrivals.</td></tr>
+      <tr><td>Activity</td><td>distribution / arg1</td><td>Exponential, mean=4 min</td><td>Service time distribution. Mean must be less than mean inter-arrival time to keep utilization below 100%.</td></tr>
+      <tr><td>Queue</td><td>rankType</td><td>FIFO (0)</td><td>Item ranking rule. FIFO (first-in first-out) is standard for M/M/1. Change to attribute-based for priority queues.</td></tr>
+      <tr><td>Create</td><td>maxArrivals</td><td>0 (unlimited)</td><td>Maximum number of items to generate. Set to 0 for unlimited (steady-state runs). Limit for finite-population studies.</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="common-mistakes">
+  <h2>Common mistakes</h2>
+  <ul>
+    <li>Forgetting to place a Queue before the Activity — without a Queue, items that arrive when the server is busy are destroyed rather than waiting, causing incorrect throughput and lost-item errors</li>
+    <li>Setting server utilization at or above 100% (mean service time &gt;= mean inter-arrival time) — the queue grows without bound and the model never reaches steady state; always verify utilization = (mean service time / mean inter-arrival time) &lt; 1</li>
+    <li>Running the simulation for too short a time — M/M/1 systems need a warm-up period before reaching steady state; results collected during transient phase are not representative</li>
+    <li>Using a constant (fixed) inter-arrival time instead of exponential when modeling Poisson arrivals — constant arrivals prevent realistic queue buildup and underestimate wait times</li>
+  </ul>
+  </section>
+
+  <section class="key-metrics">
+  <h2>What to measure</h2>
+  <ul>
+    <li>Average queue length (WaitingLine block statistics)</li>
+    <li>Average wait time in queue (WaitingLine block statistics)</li>
+    <li>Server utilization percentage (Server block statistics)</li>
+    <li>Throughput (items per time unit, from Departures block)</li>
+    <li>Average total cycle time (from Departures block)</li>
+  </ul>
+  </section>
+
+  <section class="variations">
+  <h2>Variations</h2>
+  <ul>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+  </ul>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!--
+title: Priority Queue | Duke Systems AB
+description: A queuing system where items are served in priority order rather than arrival order. High-priority items jump ahead of lower-priority items in the queue, modeling emergency services, VIP lanes, or job scheduling with urgency levels.
+lang: en
+robots: noindex, nofollow
+page-css:
+  .duke-table{width:100%;max-width:820px;margin:0 auto;border-collapse:collapse;font-size:0.92rem;}
+  .duke-table th{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);text-align:left;padding:0.75rem 1rem;border-bottom:2px solid var(--teal);}
+  .duke-table td{padding:0.75rem 1rem;border-bottom:1px solid var(--border);color:var(--navy);vertical-align:top;}
+  .duke-table tr:last-child td{border-bottom:none;}
+  .duke-table-wrap{overflow-x:auto;}
+-->
+<!-- ─── PRODUKT-HERO ─────────────────────────────────────── -->
+<section id="top" style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 45%,#2d7a7a 100%);padding:140px 0 80px;position:relative;overflow:hidden;">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <a href="/simulationsmcp/v1/guides/queuing/" style="display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--steel-lt);text-decoration:none;margin-bottom:1.5rem;">← Queuing Systems</a>
+    <div style="display:inline-flex;align-items:center;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <span style="font-size:2rem;">🧭</span>
+      <span class="section-label" style="color:var(--steel-lt);margin:0;">Queuing Systems</span>
+    </div>
+    <h1 style="color:#fff;margin-bottom:1.25rem;">Priority Queue</h1>
+    <p style="font-size:1.15rem;color:rgba(255,255,255,0.8);max-width:640px;">A queuing system where items are served in priority order rather than arrival order. High-priority items jump ahead of lower-priority items in the queue, modeling emergency services, VIP lanes, or job scheduling with urgency levels.</p>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Queuing Systems</span>
+      <h2 style="color:var(--navy);">When to use this</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;">Modeling systems where certain customers or jobs must be served before others regardless of arrival order</li>
+      <li style="margin-bottom:0.6rem;">Evaluating the impact of priority classes on wait time distribution across customer segments</li>
+      <li style="margin-bottom:0.6rem;">Modeling preemptive or non-preemptive service disciplines in computer or manufacturing systems</li>
+      <li style="margin-bottom:0.6rem;">Designing triage systems in healthcare, emergency response, or critical systems</li>
+      <li style="margin-bottom:0.6rem;">Analyzing fairness trade-offs: high-priority items get fast service but low-priority items may wait excessively</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Queuing Systems</span>
+      <h2 style="color:var(--navy);">Blocks</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+        <tbody><tr><td>Create</td><td>Item.lbr</td><td>Arrivals</td><td>Generates all arriving items; may use multiple Create blocks for different priority classes</td></tr><tr><td>Set</td><td>Item.lbr</td><td>AssignPriority</td><td>Assigns a numeric priority attribute value to each item (e.g., 1=high, 3=low); attribute name must match Queue sort attribute</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>PriorityQueue</td><td>Ranks waiting items by attribute value; lower attribute value = higher priority when ascending sort is used</td></tr><tr><td>Activity</td><td>Item.lbr</td><td>Server</td><td>Processes items one at a time; always takes the highest-priority item from the Queue</td></tr><tr><td>Exit</td><td>Item.lbr</td><td>Departures</td><td>Collects items and records statistics; add separate Exit blocks per priority class for segmented analysis</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Queuing Systems</span>
+      <h2 style="color:#fff;">Connections</h2>
+    </div>
+    <div class="mcp-terminal reveal" style="background:rgba(0,0,0,0.4);max-width:720px;margin:0 auto;">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div>
+        <span class="terminal-title">Connections</span>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line"><span class="terminal-result">Arrivals (ItemOut) → AssignPriority (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">AssignPriority (ItemOut) → PriorityQueue (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">PriorityQueue (ItemOut) → Server (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Server (ItemOut) → Departures (ItemIn)</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Queuing Systems</span>
+      <h2 style="color:var(--navy);">Key parameters</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+        <tbody><tr><td>Set</td><td>attributeName / value</td><td>attribute=&#x27;priority&#x27;, value=1 (high) or 3 (low)</td><td>The attribute name used for ranking must exactly match the Queue&#x27;s sort attribute name. Use lower numbers for higher priority with ascending sort.</td></tr><tr><td>Queue</td><td>rankType / sortAttribute / ascending</td><td>rankType=attribute, sortAttribute=&#x27;priority&#x27;, ascending=true</td><td>Set rankType to attribute-based, specify the attribute name, and set ascending=true so items with smallest attribute value (highest priority) are served first.</td></tr><tr><td>Create</td><td>distribution / arg1</td><td>Multiple Create blocks with different rates per priority class</td><td>Use one Create block per priority class, each with its own inter-arrival distribution, to control the mix of priority levels.</td></tr><tr><td>Activity</td><td>distribution / arg1</td><td>Exponential, mean=4 min</td><td>Service time is typically the same regardless of priority (non-preemptive discipline). Preemptive requires custom logic.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Queuing Systems</span>
+      <h2 style="color:var(--navy);">Common mistakes</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Setting the Queue sort attribute name that does not exactly match the attribute name assigned by the Set block — the Queue will not recognize the attribute and will default to FIFO, silently ignoring priorities; attribute names are case-sensitive</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Using ascending sort with higher numbers meaning higher priority — this sorts backwards; either use lower numbers for higher priority with ascending=true, or use descending=true with higher numbers for higher priority</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Using a single Create block and trying to assign priorities probabilistically inside one Set block — it is cleaner and more accurate to use separate Create blocks with different rates for each priority class so arrival rates are independently controlled</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Omitting the Set block and trying to assign priority in the Create block itself — Create block does not support attribute assignment; a Set block immediately after Create is required</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Queuing Systems</span>
+      <h2 style="color:#fff;">What to measure</h2>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Average wait time per priority class (use separate Exit blocks or attribute-filtered statistics)</p></div>
+      <div class="pillar reveal reveal-delay-2"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Queue length breakdown by priority level</p></div>
+      <div class="pillar reveal reveal-delay-3"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Server utilization (shared across all priority classes)</p></div>
+      <div class="pillar reveal reveal-delay-4"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Probability low-priority items wait longer than acceptable threshold</p></div>
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Throughput per priority class versus arrival rate</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Queuing Systems</span>
+      <h2 style="color:var(--navy);">Variations</h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1"><div class="card-icon teal">🔀</div><h3>Two priority classes (high/normal)</h3><p>Use two Create blocks with different rates; Set assigns attribute=1 for high, attribute=2 for normal; single Queue with attribute ranking</p></div>
+      <div class="service-card reveal reveal-delay-2"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/queuing/multi-server/" style="color:inherit;text-decoration:none;">Priority with multiple servers →</a></h3><p>Replace Activity with Workstation (maxServers &gt; 1); Workstation respects Queue priority ranking when pulling items</p></div>
+      <div class="service-card reveal reveal-delay-3"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/queuing/simple-queue/" style="color:inherit;text-decoration:none;">Simple FIFO baseline →</a></h3><p>Change Queue rankType to FIFO to compare priority discipline versus first-come-first-served performance</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ──────────────────────────────────────────────── -->
+<section style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 50%,#287070 100%);padding:80px 0;text-align:center;">
+  <div class="container" style="position:relative;z-index:2;">
+    <h2 style="color:#fff;margin-bottom:1rem;" data-sv="Behöver du hjälp med din modell?" data-en="Need help with your model?">Behöver du hjälp med din modell?</h2>
+    <p style="color:rgba(255,255,255,0.75);max-width:480px;margin:0 auto 2.5rem;" data-sv="Duke Systems har arbetat med ExtendSim sedan 1988." data-en="Duke Systems has worked with ExtendSim since 1988.">Duke Systems har arbetat med ExtendSim sedan 1988.</p>
+    <a href="/index.html#kontakt" class="btn btn-primary" data-sv="Berätta om ditt problem" data-en="Tell us about your problem">Berätta om ditt problem</a>
+  </div>
+</section>
+

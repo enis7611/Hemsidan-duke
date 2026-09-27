@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inventory Management (Reorder Point)</title>
+<meta name="description" content="A reorder-point inventory model where a Gate block checks stock level and either fulfills demand immediately from stock or places a replenishment order. Models the classic (s, S) or (R, Q) inventory policy.">
+</head>
+<body>
+<main class="guide-content">
+  <nav class="breadcrumb"><a href="/guides/">Guides</a> / <a href="/guides/logistics/">Logistics &amp; Supply Chain</a></nav>
+  <h1>Inventory Management (Reorder Point)</h1>
+  <p class="summary">A reorder-point inventory model where a Gate block checks stock level and either fulfills demand immediately from stock or places a replenishment order. Models the classic (s, S) or (R, Q) inventory policy.</p>
+
+  <section class="use-when">
+  <h2>When to use this</h2>
+  <ul>
+    <li>Modeling an inventory system with a defined reorder point and order quantity policy</li>
+    <li>Analyzing service level (fill rate) and stockout frequency under variable demand</li>
+    <li>Evaluating the trade-off between safety stock levels and holding costs</li>
+    <li>Modeling any threshold-triggered replenishment system (kanban, min-max, reorder point)</li>
+    <li>Determining optimal reorder point and order quantity for a given service level target</li>
+  </ul>
+  </section>
+
+  <section class="blocks">
+  <h2>Blocks</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Create</td><td>Item.lbr</td><td>DemandOrders</td><td>Generates customer demand events (orders); each item represents one demand unit</td></tr>
+      <tr><td>Queue</td><td>Item.lbr</td><td>OrderBacklog</td><td>Holds demand orders that cannot be immediately fulfilled due to stockout; represents backorders</td></tr>
+      <tr><td>Gate</td><td>Item.lbr</td><td>StockCheck</td><td>Opens when stock is available; closes when stock is depleted below reorder point, triggering replenishment</td></tr>
+      <tr><td>Activity</td><td>Item.lbr</td><td>Fulfill</td><td>Order fulfillment processing time (picking, packing); represents the time to fulfill from available stock</td></tr>
+      <tr><td>Create</td><td>Item.lbr</td><td>Replenishment</td><td>Generates replenishment arrivals after lead time; represents supplier delivery</td></tr>
+      <tr><td>Activity</td><td>Item.lbr</td><td>ReplenishLead</td><td>Models replenishment lead time from order placement to stock arrival</td></tr>
+      <tr><td>Exit</td><td>Item.lbr</td><td>FulfilledDemand</td><td>Records fulfilled orders; throughput versus DemandOrders rate gives fill rate</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="connections">
+  <h2>Connections</h2>
+  <ul>
+    <li>DemandOrders (ItemOut) → OrderBacklog (ItemIn)</li>
+    <li>OrderBacklog (ItemOut) → StockCheck (ItemIn)</li>
+    <li>StockCheck (ItemOut) → Fulfill (ItemIn)</li>
+    <li>Fulfill (ItemOut) → FulfilledDemand (ItemIn)</li>
+    <li>Replenishment (ItemOut) → ReplenishLead (ItemIn)</li>
+    <li>ReplenishLead (ItemOut) → StockCheck (value connector to open/close)</li>
+  </ul>
+  </section>
+
+  <section class="key-parameters">
+  <h2>Key parameters</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+    <tbody>
+      <tr><td>Gate</td><td>initialState / openValue / closeValue</td><td>initialState=open (stock available), controlled by inventory level signal</td><td>Gate opens when stock is available and closes on stockout. In practice, link a Value connector from an inventory counter to the Gate to implement the reorder-point check.</td></tr>
+      <tr><td>Create (Replenishment)</td><td>distribution / arg1</td><td>Triggered by stockout event, not time-based</td><td>Replenishment orders are triggered when stock hits the reorder point. Model as scheduled or use an Equation block to trigger replenishment based on inventory level.</td></tr>
+      <tr><td>Activity (ReplenishLead)</td><td>distribution / arg1</td><td>Constant or triangular (1-5 days)</td><td>Supplier lead time from order placement to stock receipt. Longer and more variable lead times require higher safety stock to maintain the same service level.</td></tr>
+      <tr><td>Activity (Fulfill)</td><td>distribution / arg1</td><td>Constant or short exponential (0.5-2 hours)</td><td>Order fulfillment processing time. This is typically much shorter than replenishment lead time and contributes minimally to stockout duration.</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="common-mistakes">
+  <h2>Common mistakes</h2>
+  <ul>
+    <li>Modeling inventory as item count without a Gate — without a Gate to block demand when stock is zero, items flow through freely regardless of stock level, making stockouts invisible in the model</li>
+    <li>Using a single Create block for both demand and replenishment instead of modeling the reorder trigger explicitly — replenishment should only occur when stock falls below the reorder point, not on a fixed schedule independent of demand</li>
+    <li>Not modeling backorders separately from lost sales — if the model routes unfulfilled demand to Exit rather than OrderBacklog Queue, it is modeling lost sales (not backorders); choose the correct stockout behavior for your scenario</li>
+    <li>Ignoring the variability in replenishment lead time — using a constant lead time when real lead times are variable underestimates required safety stock and overestimates achievable service levels</li>
+  </ul>
+  </section>
+
+  <section class="key-metrics">
+  <h2>What to measure</h2>
+  <ul>
+    <li>Fill rate: fraction of orders fulfilled without backorder (FulfilledDemand throughput / DemandOrders throughput)</li>
+    <li>Average backorder level (OrderBacklog queue length over time)</li>
+    <li>Average stockout duration per cycle</li>
+    <li>Average on-hand inventory level (between replenishment cycles)</li>
+    <li>Replenishment frequency (number of orders placed per time period)</li>
+  </ul>
+  </section>
+
+  <section class="variations">
+  <h2>Variations</h2>
+  <ul>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+  </ul>
+  </section>
+</main>
+</body>
+</html>

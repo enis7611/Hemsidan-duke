@@ -1,0 +1,23 @@
+[
+  "/guides/",
+  "/guides/continuous/",
+  "/guides/continuous/feedback-control/",
+  "/guides/flow/",
+  "/guides/flow/tank-system/",
+  "/guides/logistics/",
+  "/guides/logistics/inventory-management/",
+  "/guides/logistics/supply-chain/",
+  "/guides/manufacturing/",
+  "/guides/manufacturing/batch-assembly/",
+  "/guides/manufacturing/inspection-rework/",
+  "/guides/manufacturing/serial-line/",
+  "/guides/queuing/",
+  "/guides/queuing/multi-server/",
+  "/guides/queuing/priority-queue/",
+  "/guides/queuing/simple-queue/",
+  "/guides/resources/",
+  "/guides/resources/shared-resources/",
+  "/guides/resources/shift-schedule/",
+  "/simulationsmcp/v1/guide-schema.json",
+  "/simulationsmcp/v1/modeling_guides.json"
+]

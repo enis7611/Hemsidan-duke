@@ -1,0 +1,155 @@
+<!--
+title: Inspection and Rework Loop | Duke Systems AB
+description: A quality control pattern where items are inspected after processing and defective items are routed to a rework operation before returning for re-inspection. Models any feedback loop where failures are reprocessed.
+lang: en
+robots: noindex, nofollow
+page-css:
+  .duke-table{width:100%;max-width:820px;margin:0 auto;border-collapse:collapse;font-size:0.92rem;}
+  .duke-table th{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);text-align:left;padding:0.75rem 1rem;border-bottom:2px solid var(--teal);}
+  .duke-table td{padding:0.75rem 1rem;border-bottom:1px solid var(--border);color:var(--navy);vertical-align:top;}
+  .duke-table tr:last-child td{border-bottom:none;}
+  .duke-table-wrap{overflow-x:auto;}
+-->
+<!-- ─── PRODUKT-HERO ─────────────────────────────────────── -->
+<section id="top" style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 45%,#2d7a7a 100%);padding:140px 0 80px;position:relative;overflow:hidden;">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <a href="/simulationsmcp/v1/guides/manufacturing/" style="display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--steel-lt);text-decoration:none;margin-bottom:1.5rem;">← Manufacturing</a>
+    <div style="display:inline-flex;align-items:center;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <span style="font-size:2rem;">🧭</span>
+      <span class="section-label" style="color:var(--steel-lt);margin:0;">Manufacturing</span>
+    </div>
+    <h1 style="color:#fff;margin-bottom:1.25rem;">Inspection and Rework Loop</h1>
+    <p style="font-size:1.15rem;color:rgba(255,255,255,0.8);max-width:640px;">A quality control pattern where items are inspected after processing and defective items are routed to a rework operation before returning for re-inspection. Models any feedback loop where failures are reprocessed.</p>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Manufacturing</span>
+      <h2 style="color:var(--navy);">When to use this</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;">Modeling a production process with a quality gate and rework loop (non-zero defect rate)</li>
+      <li style="margin-bottom:0.6rem;">Analyzing the capacity impact of rework on the main production line</li>
+      <li style="margin-bottom:0.6rem;">Estimating effective throughput when accounting for rework cycles</li>
+      <li style="margin-bottom:0.6rem;">Evaluating inspection station utilization and rework queue buildup</li>
+      <li style="margin-bottom:0.6rem;">Modeling any retry or reprocessing loop (loan applications, document reviews, repair processes)</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Manufacturing</span>
+      <h2 style="color:var(--navy);">Blocks</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+        <tbody><tr><td>Create</td><td>Item.lbr</td><td>Arrivals</td><td>Generates new items entering the process</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>ProcessQueue</td><td>Holds items waiting for initial processing</td></tr><tr><td>Activity</td><td>Item.lbr</td><td>Processing</td><td>Main processing operation that items pass through before inspection</td></tr><tr><td>Activity</td><td>Item.lbr</td><td>Inspection</td><td>Quality check operation; all items pass through regardless of outcome</td></tr><tr><td>Select Item Out</td><td>Item.lbr</td><td>QCGate</td><td>Routes items probabilistically: pass percentage exits, fail percentage goes to rework</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>ReworkQueue</td><td>Holds defective items waiting for rework; may build up if defect rate is high</td></tr><tr><td>Activity</td><td>Item.lbr</td><td>Rework</td><td>Rework or repair operation; items loop back to Inspection after rework</td></tr><tr><td>Select Item In</td><td>Item.lbr</td><td>RejoinLine</td><td>Merges reworked items back into the inspection queue with new arrivals</td></tr><tr><td>Exit</td><td>Item.lbr</td><td>PassedItems</td><td>Receives items that passed inspection; records final throughput</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Manufacturing</span>
+      <h2 style="color:#fff;">Connections</h2>
+    </div>
+    <div class="mcp-terminal reveal" style="background:rgba(0,0,0,0.4);max-width:720px;margin:0 auto;">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div>
+        <span class="terminal-title">Connections</span>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line"><span class="terminal-result">Arrivals (ItemOut) → ProcessQueue (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">ProcessQueue (ItemOut) → Processing (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Processing (ItemOut) → RejoinLine (ItemIn[0])</span></div>
+        <div class="terminal-line"><span class="terminal-result">RejoinLine (ItemOut) → Inspection (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Inspection (ItemOut) → QCGate (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">QCGate (ItemOut[0]) → PassedItems (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">QCGate (ItemOut[1]) → ReworkQueue (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">ReworkQueue (ItemOut) → Rework (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Rework (ItemOut) → RejoinLine (ItemIn[1])</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Manufacturing</span>
+      <h2 style="color:var(--navy);">Key parameters</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+        <tbody><tr><td>Select Item Out</td><td>mode / probabilities</td><td>probability mode; [0.90, 0.10] for 10% defect rate</td><td>The pass/fail split. Probabilities must sum to 1.0. Output 0 = pass (to Exit), Output 1 = fail (to rework). A 10% defect rate means effective throughput is reduced.</td></tr><tr><td>Activity (Rework)</td><td>distribution / arg1</td><td>Triangular(5, 10, 20) min</td><td>Rework time is typically longer and more variable than normal processing time. High rework time combined with high defect rate can saturate the system.</td></tr><tr><td>Activity (Inspection)</td><td>distribution / arg1</td><td>Constant or triangular, short duration</td><td>Inspection time. All items pass through here, so inspection becomes a bottleneck if defect rate is high and rework items re-enter inspection.</td></tr><tr><td>Select Item Out</td><td>mode</td><td>probability (mode=3 in ExtendSim)</td><td>Must use probability mode, not condition or attribute mode, for a simple defect rate split. Verify the mode integer value using block_configure or dialog_search.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Manufacturing</span>
+      <h2 style="color:var(--navy);">Common mistakes</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Connecting the rework loop back to the main ProcessQueue instead of to a Select Item In before Inspection — reworked items should return to Inspection, not restart the full process from the beginning; routing to ProcessQueue inflates cycle time and processes items unnecessarily</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Setting Select Item Out probabilities that do not sum to 1.0 — ExtendSim may reject items or route them incorrectly; always verify [pass_prob + fail_prob] = 1.0 exactly</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Not accounting for the load multiplication effect: with a 20% defect rate and rework always passing on second try, each item consumes 1.2x inspection capacity on average — at high defect rates (&gt;30%), inspection quickly becomes the bottleneck even with short inspection time</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Forgetting to add a Select Item In block to merge rework flow back — without it, reworked items cannot re-enter the inspection Activity, causing connection errors or items being destroyed</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Manufacturing</span>
+      <h2 style="color:#fff;">What to measure</h2>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Effective throughput at PassedItems exit</p></div>
+      <div class="pillar reveal reveal-delay-2"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Average number of rework cycles per item (average loops before passing)</p></div>
+      <div class="pillar reveal reveal-delay-3"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Rework queue length and average wait time</p></div>
+      <div class="pillar reveal reveal-delay-4"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Inspection station utilization (accounts for both first-pass and reworked items)</p></div>
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Total cycle time including rework (versus first-pass-only cycle time)</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Manufacturing</span>
+      <h2 style="color:var(--navy);">Variations</h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1"><div class="card-icon teal">🔀</div><h3>Scrap instead of rework</h3><p>Replace rework loop with a second Exit block (Scrap); items failing inspection exit as scrap rather than being reworked</p></div>
+      <div class="service-card reveal reveal-delay-2"><div class="card-icon teal">🔀</div><h3>Maximum rework attempts</h3><p>Add a Set block to increment a rework-count attribute; add a Select Item Out after Rework to scrap items exceeding maximum allowed rework cycles</p></div>
+      <div class="service-card reveal reveal-delay-3"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/manufacturing/serial-line/" style="color:inherit;text-decoration:none;">In-line with serial production →</a></h3><p>Insert the inspection and rework loop between two stages of a serial line to model in-process quality control</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ──────────────────────────────────────────────── -->
+<section style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 50%,#287070 100%);padding:80px 0;text-align:center;">
+  <div class="container" style="position:relative;z-index:2;">
+    <h2 style="color:#fff;margin-bottom:1rem;" data-sv="Behöver du hjälp med din modell?" data-en="Need help with your model?">Behöver du hjälp med din modell?</h2>
+    <p style="color:rgba(255,255,255,0.75);max-width:480px;margin:0 auto 2.5rem;" data-sv="Duke Systems har arbetat med ExtendSim sedan 1988." data-en="Duke Systems has worked with ExtendSim since 1988.">Duke Systems har arbetat med ExtendSim sedan 1988.</p>
+    <a href="/index.html#kontakt" class="btn btn-primary" data-sv="Berätta om ditt problem" data-en="Tell us about your problem">Berätta om ditt problem</a>
+  </div>
+</section>
+

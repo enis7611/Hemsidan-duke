@@ -1,0 +1,152 @@
+<!--
+title: Inventory Management (Reorder Point) | Duke Systems AB
+description: A reorder-point inventory model where a Gate block checks stock level and either fulfills demand immediately from stock or places a replenishment order. Models the classic (s, S) or (R, Q) inventory policy.
+lang: en
+robots: noindex, nofollow
+page-css:
+  .duke-table{width:100%;max-width:820px;margin:0 auto;border-collapse:collapse;font-size:0.92rem;}
+  .duke-table th{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);text-align:left;padding:0.75rem 1rem;border-bottom:2px solid var(--teal);}
+  .duke-table td{padding:0.75rem 1rem;border-bottom:1px solid var(--border);color:var(--navy);vertical-align:top;}
+  .duke-table tr:last-child td{border-bottom:none;}
+  .duke-table-wrap{overflow-x:auto;}
+-->
+<!-- ─── PRODUKT-HERO ─────────────────────────────────────── -->
+<section id="top" style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 45%,#2d7a7a 100%);padding:140px 0 80px;position:relative;overflow:hidden;">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <a href="/simulationsmcp/v1/guides/logistics/" style="display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--steel-lt);text-decoration:none;margin-bottom:1.5rem;">← Logistics &amp; Supply Chain</a>
+    <div style="display:inline-flex;align-items:center;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <span style="font-size:2rem;">🧭</span>
+      <span class="section-label" style="color:var(--steel-lt);margin:0;">Logistics &amp; Supply Chain</span>
+    </div>
+    <h1 style="color:#fff;margin-bottom:1.25rem;">Inventory Management (Reorder Point)</h1>
+    <p style="font-size:1.15rem;color:rgba(255,255,255,0.8);max-width:640px;">A reorder-point inventory model where a Gate block checks stock level and either fulfills demand immediately from stock or places a replenishment order. Models the classic (s, S) or (R, Q) inventory policy.</p>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Logistics &amp; Supply Chain</span>
+      <h2 style="color:var(--navy);">When to use this</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;">Modeling an inventory system with a defined reorder point and order quantity policy</li>
+      <li style="margin-bottom:0.6rem;">Analyzing service level (fill rate) and stockout frequency under variable demand</li>
+      <li style="margin-bottom:0.6rem;">Evaluating the trade-off between safety stock levels and holding costs</li>
+      <li style="margin-bottom:0.6rem;">Modeling any threshold-triggered replenishment system (kanban, min-max, reorder point)</li>
+      <li style="margin-bottom:0.6rem;">Determining optimal reorder point and order quantity for a given service level target</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Logistics &amp; Supply Chain</span>
+      <h2 style="color:var(--navy);">Blocks</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+        <tbody><tr><td>Create</td><td>Item.lbr</td><td>DemandOrders</td><td>Generates customer demand events (orders); each item represents one demand unit</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>OrderBacklog</td><td>Holds demand orders that cannot be immediately fulfilled due to stockout; represents backorders</td></tr><tr><td>Gate</td><td>Item.lbr</td><td>StockCheck</td><td>Opens when stock is available; closes when stock is depleted below reorder point, triggering replenishment</td></tr><tr><td>Activity</td><td>Item.lbr</td><td>Fulfill</td><td>Order fulfillment processing time (picking, packing); represents the time to fulfill from available stock</td></tr><tr><td>Create</td><td>Item.lbr</td><td>Replenishment</td><td>Generates replenishment arrivals after lead time; represents supplier delivery</td></tr><tr><td>Activity</td><td>Item.lbr</td><td>ReplenishLead</td><td>Models replenishment lead time from order placement to stock arrival</td></tr><tr><td>Exit</td><td>Item.lbr</td><td>FulfilledDemand</td><td>Records fulfilled orders; throughput versus DemandOrders rate gives fill rate</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Logistics &amp; Supply Chain</span>
+      <h2 style="color:#fff;">Connections</h2>
+    </div>
+    <div class="mcp-terminal reveal" style="background:rgba(0,0,0,0.4);max-width:720px;margin:0 auto;">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div>
+        <span class="terminal-title">Connections</span>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line"><span class="terminal-result">DemandOrders (ItemOut) → OrderBacklog (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">OrderBacklog (ItemOut) → StockCheck (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">StockCheck (ItemOut) → Fulfill (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Fulfill (ItemOut) → FulfilledDemand (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Replenishment (ItemOut) → ReplenishLead (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">ReplenishLead (ItemOut) → StockCheck (value connector to open/close)</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Logistics &amp; Supply Chain</span>
+      <h2 style="color:var(--navy);">Key parameters</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+        <tbody><tr><td>Gate</td><td>initialState / openValue / closeValue</td><td>initialState=open (stock available), controlled by inventory level signal</td><td>Gate opens when stock is available and closes on stockout. In practice, link a Value connector from an inventory counter to the Gate to implement the reorder-point check.</td></tr><tr><td>Create (Replenishment)</td><td>distribution / arg1</td><td>Triggered by stockout event, not time-based</td><td>Replenishment orders are triggered when stock hits the reorder point. Model as scheduled or use an Equation block to trigger replenishment based on inventory level.</td></tr><tr><td>Activity (ReplenishLead)</td><td>distribution / arg1</td><td>Constant or triangular (1-5 days)</td><td>Supplier lead time from order placement to stock receipt. Longer and more variable lead times require higher safety stock to maintain the same service level.</td></tr><tr><td>Activity (Fulfill)</td><td>distribution / arg1</td><td>Constant or short exponential (0.5-2 hours)</td><td>Order fulfillment processing time. This is typically much shorter than replenishment lead time and contributes minimally to stockout duration.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Logistics &amp; Supply Chain</span>
+      <h2 style="color:var(--navy);">Common mistakes</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Modeling inventory as item count without a Gate — without a Gate to block demand when stock is zero, items flow through freely regardless of stock level, making stockouts invisible in the model</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Using a single Create block for both demand and replenishment instead of modeling the reorder trigger explicitly — replenishment should only occur when stock falls below the reorder point, not on a fixed schedule independent of demand</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Not modeling backorders separately from lost sales — if the model routes unfulfilled demand to Exit rather than OrderBacklog Queue, it is modeling lost sales (not backorders); choose the correct stockout behavior for your scenario</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Ignoring the variability in replenishment lead time — using a constant lead time when real lead times are variable underestimates required safety stock and overestimates achievable service levels</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Logistics &amp; Supply Chain</span>
+      <h2 style="color:#fff;">What to measure</h2>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Fill rate: fraction of orders fulfilled without backorder (FulfilledDemand throughput / DemandOrders throughput)</p></div>
+      <div class="pillar reveal reveal-delay-2"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Average backorder level (OrderBacklog queue length over time)</p></div>
+      <div class="pillar reveal reveal-delay-3"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Average stockout duration per cycle</p></div>
+      <div class="pillar reveal reveal-delay-4"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Average on-hand inventory level (between replenishment cycles)</p></div>
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Replenishment frequency (number of orders placed per time period)</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Logistics &amp; Supply Chain</span>
+      <h2 style="color:var(--navy);">Variations</h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1"><div class="card-icon teal">🔀</div><h3>Lost sales (no backorder)</h3><p>Remove OrderBacklog Queue; add a second Exit for LostSales; route excess demand directly to LostSales when Gate is closed</p></div>
+      <div class="service-card reveal reveal-delay-2"><div class="card-icon teal">🔀</div><h3>Periodic review (R, S) policy</h3><p>Replace continuous Gate monitoring with a scheduled Create that triggers inventory review at fixed intervals; order up to S when inventory falls below s</p></div>
+      <div class="service-card reveal reveal-delay-3"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/logistics/supply-chain/" style="color:inherit;text-decoration:none;">Multi-echelon supply chain →</a></h3><p>Chain multiple inventory stages (retail, distribution center, supplier) with each stage having its own reorder logic and lead time</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ──────────────────────────────────────────────── -->
+<section style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 50%,#287070 100%);padding:80px 0;text-align:center;">
+  <div class="container" style="position:relative;z-index:2;">
+    <h2 style="color:#fff;margin-bottom:1rem;" data-sv="Behöver du hjälp med din modell?" data-en="Need help with your model?">Behöver du hjälp med din modell?</h2>
+    <p style="color:rgba(255,255,255,0.75);max-width:480px;margin:0 auto 2.5rem;" data-sv="Duke Systems har arbetat med ExtendSim sedan 1988." data-en="Duke Systems has worked with ExtendSim since 1988.">Duke Systems har arbetat med ExtendSim sedan 1988.</p>
+    <a href="/index.html#kontakt" class="btn btn-primary" data-sv="Berätta om ditt problem" data-en="Tell us about your problem">Berätta om ditt problem</a>
+  </div>
+</section>
+

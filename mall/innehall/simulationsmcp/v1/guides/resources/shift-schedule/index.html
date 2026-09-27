@@ -1,0 +1,150 @@
+<!--
+title: Shift Schedule | Duke Systems AB
+description: A model where processing capacity changes over time according to a work shift schedule. Activity capacity is linked to a Shift block that defines working hours, breaks, and off-shift periods. Models any operation with scheduled capacity variation.
+lang: en
+robots: noindex, nofollow
+page-css:
+  .duke-table{width:100%;max-width:820px;margin:0 auto;border-collapse:collapse;font-size:0.92rem;}
+  .duke-table th{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);text-align:left;padding:0.75rem 1rem;border-bottom:2px solid var(--teal);}
+  .duke-table td{padding:0.75rem 1rem;border-bottom:1px solid var(--border);color:var(--navy);vertical-align:top;}
+  .duke-table tr:last-child td{border-bottom:none;}
+  .duke-table-wrap{overflow-x:auto;}
+-->
+<!-- ─── PRODUKT-HERO ─────────────────────────────────────── -->
+<section id="top" style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 45%,#2d7a7a 100%);padding:140px 0 80px;position:relative;overflow:hidden;">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <a href="/simulationsmcp/v1/guides/resources/" style="display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--steel-lt);text-decoration:none;margin-bottom:1.5rem;">← Resource Management</a>
+    <div style="display:inline-flex;align-items:center;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <span style="font-size:2rem;">🧭</span>
+      <span class="section-label" style="color:var(--steel-lt);margin:0;">Resource Management</span>
+    </div>
+    <h1 style="color:#fff;margin-bottom:1.25rem;">Shift Schedule</h1>
+    <p style="font-size:1.15rem;color:rgba(255,255,255,0.8);max-width:640px;">A model where processing capacity changes over time according to a work shift schedule. Activity capacity is linked to a Shift block that defines working hours, breaks, and off-shift periods. Models any operation with scheduled capacity variation.</p>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Resource Management</span>
+      <h2 style="color:var(--navy);">When to use this</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;">Modeling a facility that operates on defined shifts (8-hour, 12-hour, or custom shift patterns)</li>
+      <li style="margin-bottom:0.6rem;">Analyzing queue buildup during off-hours and the clearing time at shift start</li>
+      <li style="margin-bottom:0.6rem;">Evaluating the impact of adding overtime or an additional shift on throughput and backlog</li>
+      <li style="margin-bottom:0.6rem;">Modeling scheduled maintenance windows that take capacity offline periodically</li>
+      <li style="margin-bottom:0.6rem;">Any system where server capacity is a time-varying schedule rather than a fixed number</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Resource Management</span>
+      <h2 style="color:var(--navy);">Blocks</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+        <tbody><tr><td>Create</td><td>Item.lbr</td><td>Arrivals</td><td>Generates items continuously (24/7 demand even when processing is offline during off-shift)</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>WorkQueue</td><td>Accumulates items during off-shift periods; drains when shift starts and capacity comes online</td></tr><tr><td>Activity</td><td>Item.lbr</td><td>ShiftedServer</td><td>Processing activity whose capacity is controlled by the Shift block; capacity drops to zero off-shift</td></tr><tr><td>Shift</td><td>Item.lbr</td><td>WorkSchedule</td><td>Defines the shift pattern: start times, end times, and capacity for each shift period; drives Activity capacity</td></tr><tr><td>Exit</td><td>Item.lbr</td><td>Completions</td><td>Records completed items; throughput reflects the shift-constrained effective capacity</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Resource Management</span>
+      <h2 style="color:#fff;">Connections</h2>
+    </div>
+    <div class="mcp-terminal reveal" style="background:rgba(0,0,0,0.4);max-width:720px;margin:0 auto;">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div>
+        <span class="terminal-title">Connections</span>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line"><span class="terminal-result">Arrivals (ItemOut) → WorkQueue (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">WorkQueue (ItemOut) → ShiftedServer (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">ShiftedServer (ItemOut) → Completions (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">WorkSchedule (Value output) → ShiftedServer (capacity connector)</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Resource Management</span>
+      <h2 style="color:var(--navy);">Key parameters</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+        <tbody><tr><td>Shift</td><td>schedule</td><td>[{startTime: 0, endTime: 8, capacity: 1}, {startTime: 8, endTime: 16, capacity: 3}, {startTime: 16, endTime: 24, capacity: 2}]</td><td>Defines capacity at each time period. Times are in simulation time units. Capacity=0 means off-shift. Multiple rows define multiple shift periods in one 24-hour cycle.</td></tr><tr><td>Activity</td><td>distribution / arg1</td><td>Triangular(3, 5, 8) min</td><td>Processing time per item during active shift. Items in the Activity when a shift ends continue processing; items in Queue wait until next shift starts.</td></tr><tr><td>Create</td><td>distribution / arg1</td><td>Exponential, mean matching peak capacity utilization target</td><td>Arrival rate should be set so that total daily arrivals match expected daily throughput; if arrivals exceed daily capacity, backlog grows without bound.</td></tr><tr><td>Shift</td><td>schedule capacity values</td><td>Integer values (1, 2, 3) representing number of simultaneous servers</td><td>Shift capacity values set the maximum concurrent items being processed by the linked Activity. Ensure Activity can handle the specified parallel capacity.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Resource Management</span>
+      <h2 style="color:var(--navy);">Common mistakes</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Not connecting the Shift block output to the Activity capacity connector — the Shift block has no effect on the Activity unless its value output connector is wired to the Activity&#x27;s capacity input; without this connection the Activity runs at full capacity 24/7</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Setting shift schedule times in wrong time units — if the simulation runs in minutes but shift start/end times are entered as hours (e.g., 8 instead of 480), the shift pattern will be wildly incorrect; always confirm simulation time units before entering schedule times</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Forgetting that items already in the Activity when a shift ends continue processing to completion — the shift controls how many new items can start, not whether in-progress items finish; this is usually correct behavior but must be understood when analyzing shift boundary effects</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Making total daily arrival volume exceed total daily capacity — if arrivals per day consistently exceed (capacity_per_shift * hours_per_shift / mean_service_time), the queue grows unboundedly across days; always verify that daily capacity exceeds daily demand</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Resource Management</span>
+      <h2 style="color:#fff;">What to measure</h2>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Queue length at shift start (backlog carryover from previous off-period)</p></div>
+      <div class="pillar reveal reveal-delay-2"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Time to clear overnight or off-shift backlog after shift starts</p></div>
+      <div class="pillar reveal reveal-delay-3"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Effective throughput per shift period</p></div>
+      <div class="pillar reveal reveal-delay-4"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Activity utilization during on-shift hours (not counting off-shift time)</p></div>
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Peak queue length during off-shift accumulation</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Resource Management</span>
+      <h2 style="color:var(--navy);">Variations</h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1"><div class="card-icon teal">🔀</div><h3>Weekend/weekday schedule</h3><p>Extend Shift schedule to cover a 168-hour (7-day) cycle with different capacities on weekdays versus weekends</p></div>
+      <div class="service-card reveal reveal-delay-2"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/resources/shared-resources/" style="color:inherit;text-decoration:none;">Shift schedule with shared resources →</a></h3><p>Add Shift block to Resource Pool instead of Activity to control the number of available shared resources by shift period</p></div>
+      <div class="service-card reveal reveal-delay-3"><div class="card-icon teal">🔀</div><h3>Overtime trigger</h3><p>Add an Equation block that monitors queue length and sends a signal to increase Shift capacity above the normal level when backlog exceeds a threshold</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ──────────────────────────────────────────────── -->
+<section style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 50%,#287070 100%);padding:80px 0;text-align:center;">
+  <div class="container" style="position:relative;z-index:2;">
+    <h2 style="color:#fff;margin-bottom:1rem;" data-sv="Behöver du hjälp med din modell?" data-en="Need help with your model?">Behöver du hjälp med din modell?</h2>
+    <p style="color:rgba(255,255,255,0.75);max-width:480px;margin:0 auto 2.5rem;" data-sv="Duke Systems har arbetat med ExtendSim sedan 1988." data-en="Duke Systems has worked with ExtendSim since 1988.">Duke Systems har arbetat med ExtendSim sedan 1988.</p>
+    <a href="/index.html#kontakt" class="btn btn-primary" data-sv="Berätta om ditt problem" data-en="Tell us about your problem">Berätta om ditt problem</a>
+  </div>
+</section>
+

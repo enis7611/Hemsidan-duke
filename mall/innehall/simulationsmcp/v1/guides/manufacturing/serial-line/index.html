@@ -1,0 +1,153 @@
+<!--
+title: Serial Production Line | Duke Systems AB
+description: A sequential manufacturing line where items pass through multiple processing stages in order, with a queue before each stage to buffer work-in-process. Models assembly lines, pipeline processes, or multi-step production flows.
+lang: en
+robots: noindex, nofollow
+page-css:
+  .duke-table{width:100%;max-width:820px;margin:0 auto;border-collapse:collapse;font-size:0.92rem;}
+  .duke-table th{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);text-align:left;padding:0.75rem 1rem;border-bottom:2px solid var(--teal);}
+  .duke-table td{padding:0.75rem 1rem;border-bottom:1px solid var(--border);color:var(--navy);vertical-align:top;}
+  .duke-table tr:last-child td{border-bottom:none;}
+  .duke-table-wrap{overflow-x:auto;}
+-->
+<!-- ─── PRODUKT-HERO ─────────────────────────────────────── -->
+<section id="top" style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 45%,#2d7a7a 100%);padding:140px 0 80px;position:relative;overflow:hidden;">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <a href="/simulationsmcp/v1/guides/manufacturing/" style="display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--steel-lt);text-decoration:none;margin-bottom:1.5rem;">← Manufacturing</a>
+    <div style="display:inline-flex;align-items:center;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <span style="font-size:2rem;">🧭</span>
+      <span class="section-label" style="color:var(--steel-lt);margin:0;">Manufacturing</span>
+    </div>
+    <h1 style="color:#fff;margin-bottom:1.25rem;">Serial Production Line</h1>
+    <p style="font-size:1.15rem;color:rgba(255,255,255,0.8);max-width:640px;">A sequential manufacturing line where items pass through multiple processing stages in order, with a queue before each stage to buffer work-in-process. Models assembly lines, pipeline processes, or multi-step production flows.</p>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Manufacturing</span>
+      <h2 style="color:var(--navy);">When to use this</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;">Modeling a manufacturing line with sequential operations (machining, assembly, inspection)</li>
+      <li style="margin-bottom:0.6rem;">Identifying bottleneck stations that limit overall throughput</li>
+      <li style="margin-bottom:0.6rem;">Evaluating the effect of buffer sizes between stations on line performance</li>
+      <li style="margin-bottom:0.6rem;">Analyzing work-in-process inventory levels across the production line</li>
+      <li style="margin-bottom:0.6rem;">Comparing alternative line configurations (rebalancing cycle times across stations)</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Manufacturing</span>
+      <h2 style="color:var(--navy);">Blocks</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+        <tbody><tr><td>Create</td><td>Item.lbr</td><td>RawMaterial</td><td>Generates parts or jobs entering the production line</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>Buffer1</td><td>Holds work-in-process waiting for Stage 1; size represents physical buffer capacity</td></tr><tr><td>Activity</td><td>Item.lbr</td><td>Stage1</td><td>First processing operation with its own cycle time distribution</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>Buffer2</td><td>Intermediate buffer between Stage 1 and Stage 2</td></tr><tr><td>Activity</td><td>Item.lbr</td><td>Stage2</td><td>Second processing operation; if slower than Stage 1, becomes a bottleneck</td></tr><tr><td>Queue</td><td>Item.lbr</td><td>Buffer3</td><td>Intermediate buffer between Stage 2 and Stage 3</td></tr><tr><td>Activity</td><td>Item.lbr</td><td>Stage3</td><td>Third processing operation; final production step before exit</td></tr><tr><td>Exit</td><td>Item.lbr</td><td>FinishedGoods</td><td>Collects completed parts and records overall throughput and cycle time</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Manufacturing</span>
+      <h2 style="color:#fff;">Connections</h2>
+    </div>
+    <div class="mcp-terminal reveal" style="background:rgba(0,0,0,0.4);max-width:720px;margin:0 auto;">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div>
+        <span class="terminal-title">Connections</span>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line"><span class="terminal-result">RawMaterial (ItemOut) → Buffer1 (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Buffer1 (ItemOut) → Stage1 (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Stage1 (ItemOut) → Buffer2 (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Buffer2 (ItemOut) → Stage2 (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Stage2 (ItemOut) → Buffer3 (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Buffer3 (ItemOut) → Stage3 (ItemIn)</span></div>
+        <div class="terminal-line"><span class="terminal-result">Stage3 (ItemOut) → FinishedGoods (ItemIn)</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Manufacturing</span>
+      <h2 style="color:var(--navy);">Key parameters</h2>
+    </div>
+    <div class="duke-table-wrap reveal">
+      <table class="duke-table">
+        <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+        <tbody><tr><td>Activity (each stage)</td><td>distribution / arg1</td><td>Triangular(min, mode, max) or constant per stage</td><td>Cycle time per stage. The slowest stage (highest mean cycle time) is the bottleneck and determines maximum line throughput.</td></tr><tr><td>Queue (each buffer)</td><td>maximum capacity</td><td>5-20 items</td><td>Physical buffer size between stations. Larger buffers decouple stations and improve throughput but increase WIP inventory cost.</td></tr><tr><td>Create</td><td>distribution / arg1</td><td>Constant, value = bottleneck cycle time or slightly faster</td><td>Release rate into the line. For push systems, set faster than bottleneck. For pull/kanban, use Gate blocks to control release.</td></tr><tr><td>Activity</td><td>delayType</td><td>fixed or distribution</td><td>Use &#x27;fixed&#x27; for deterministic lines; &#x27;distribution&#x27; adds variability. Variability at any stage reduces effective throughput below theoretical maximum.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Manufacturing</span>
+      <h2 style="color:var(--navy);">Common mistakes</h2>
+    </div>
+    <ul class="reveal" style="max-width:720px;margin:0 auto;padding-left:1.2rem;line-height:1.7;color:var(--text);">
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Omitting Queue blocks between Activity blocks — without buffers, a blocked downstream Activity will also block upstream Activities through back-pressure, which may or may not be intended; always explicitly add Queue blocks and set their capacities to match physical reality</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Making all stage cycle times equal and expecting perfect throughput — variability at any stage causes blocking and starving even when means are balanced; use realistic distributions (triangular or normal) rather than constants</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Setting Create inter-arrival time faster than the bottleneck cycle time — the system never reaches steady state and buffers fill indefinitely; the Create rate should not exceed 1/bottleneck_cycle_time</li>
+      <li style="margin-bottom:0.6rem;list-style:none;">⚠️ Forgetting that the Activity block processes one item at a time by default — if a real machine processes batches, use Batch block before the Activity or set appropriate delay to reflect batch cycle time</li>
+    </ul>
+  </div>
+</section>
+
+<section style="background:linear-gradient(160deg,#1B4F4F 0%,#1E5A5A 50%,#236060 100%);position:relative;overflow:hidden;">
+  <div class="mcp-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="section-header reveal">
+      <span class="section-label" style="color:var(--teal);">Manufacturing</span>
+      <h2 style="color:#fff;">What to measure</h2>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Throughput rate (FinishedGoods items per hour)</p></div>
+      <div class="pillar reveal reveal-delay-2"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Station utilization per stage (identify bottleneck as highest utilization)</p></div>
+      <div class="pillar reveal reveal-delay-3"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Average WIP inventory in each buffer queue</p></div>
+      <div class="pillar reveal reveal-delay-4"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Average total cycle time from raw material to finished goods</p></div>
+      <div class="pillar reveal reveal-delay-1"><div style="font-size:1.8rem;margin-bottom:0.75rem;">📊</div><p>Buffer overflow frequency (if finite buffer capacity is set)</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Manufacturing</span>
+      <h2 style="color:var(--navy);">Variations</h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1"><div class="card-icon teal">🔀</div><h3>Two-stage line</h3><p>Remove Stage3 and Buffer3 for a simpler two-operation line; useful as a baseline before adding stages</p></div>
+      <div class="service-card reveal reveal-delay-2"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/manufacturing/inspection-rework/" style="color:inherit;text-decoration:none;">With inspection and rework →</a></h3><p>Add a Select Item Out block after one or more Activity stages to route a percentage of items to a rework Activity</p></div>
+      <div class="service-card reveal reveal-delay-3"><div class="card-icon teal">🔀</div><h3><a href="/simulationsmcp/v1/guides/resources/shared-resources/" style="color:inherit;text-decoration:none;">With shared resources →</a></h3><p>Add Resource Pool and have Activity blocks request resources (operators, tools) that are shared across multiple stages</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ──────────────────────────────────────────────── -->
+<section style="background:linear-gradient(135deg,#1B4F4F 0%,#236060 50%,#287070 100%);padding:80px 0;text-align:center;">
+  <div class="container" style="position:relative;z-index:2;">
+    <h2 style="color:#fff;margin-bottom:1rem;" data-sv="Behöver du hjälp med din modell?" data-en="Need help with your model?">Behöver du hjälp med din modell?</h2>
+    <p style="color:rgba(255,255,255,0.75);max-width:480px;margin:0 auto 2.5rem;" data-sv="Duke Systems har arbetat med ExtendSim sedan 1988." data-en="Duke Systems has worked with ExtendSim since 1988.">Duke Systems har arbetat med ExtendSim sedan 1988.</p>
+    <a href="/index.html#kontakt" class="btn btn-primary" data-sv="Berätta om ditt problem" data-en="Tell us about your problem">Berätta om ditt problem</a>
+  </div>
+</section>
+

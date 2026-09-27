@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Serial Production Line</title>
+<meta name="description" content="A sequential manufacturing line where items pass through multiple processing stages in order, with a queue before each stage to buffer work-in-process. Models assembly lines, pipeline processes, or multi-step production flows.">
+</head>
+<body>
+<main class="guide-content">
+  <nav class="breadcrumb"><a href="/guides/">Guides</a> / <a href="/guides/manufacturing/">Manufacturing</a></nav>
+  <h1>Serial Production Line</h1>
+  <p class="summary">A sequential manufacturing line where items pass through multiple processing stages in order, with a queue before each stage to buffer work-in-process. Models assembly lines, pipeline processes, or multi-step production flows.</p>
+
+  <section class="use-when">
+  <h2>When to use this</h2>
+  <ul>
+    <li>Modeling a manufacturing line with sequential operations (machining, assembly, inspection)</li>
+    <li>Identifying bottleneck stations that limit overall throughput</li>
+    <li>Evaluating the effect of buffer sizes between stations on line performance</li>
+    <li>Analyzing work-in-process inventory levels across the production line</li>
+    <li>Comparing alternative line configurations (rebalancing cycle times across stations)</li>
+  </ul>
+  </section>
+
+  <section class="blocks">
+  <h2>Blocks</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Library</th><th>Label</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Create</td><td>Item.lbr</td><td>RawMaterial</td><td>Generates parts or jobs entering the production line</td></tr>
+      <tr><td>Queue</td><td>Item.lbr</td><td>Buffer1</td><td>Holds work-in-process waiting for Stage 1; size represents physical buffer capacity</td></tr>
+      <tr><td>Activity</td><td>Item.lbr</td><td>Stage1</td><td>First processing operation with its own cycle time distribution</td></tr>
+      <tr><td>Queue</td><td>Item.lbr</td><td>Buffer2</td><td>Intermediate buffer between Stage 1 and Stage 2</td></tr>
+      <tr><td>Activity</td><td>Item.lbr</td><td>Stage2</td><td>Second processing operation; if slower than Stage 1, becomes a bottleneck</td></tr>
+      <tr><td>Queue</td><td>Item.lbr</td><td>Buffer3</td><td>Intermediate buffer between Stage 2 and Stage 3</td></tr>
+      <tr><td>Activity</td><td>Item.lbr</td><td>Stage3</td><td>Third processing operation; final production step before exit</td></tr>
+      <tr><td>Exit</td><td>Item.lbr</td><td>FinishedGoods</td><td>Collects completed parts and records overall throughput and cycle time</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="connections">
+  <h2>Connections</h2>
+  <ul>
+    <li>RawMaterial (ItemOut) → Buffer1 (ItemIn)</li>
+    <li>Buffer1 (ItemOut) → Stage1 (ItemIn)</li>
+    <li>Stage1 (ItemOut) → Buffer2 (ItemIn)</li>
+    <li>Buffer2 (ItemOut) → Stage2 (ItemIn)</li>
+    <li>Stage2 (ItemOut) → Buffer3 (ItemIn)</li>
+    <li>Buffer3 (ItemOut) → Stage3 (ItemIn)</li>
+    <li>Stage3 (ItemOut) → FinishedGoods (ItemIn)</li>
+  </ul>
+  </section>
+
+  <section class="key-parameters">
+  <h2>Key parameters</h2>
+  <table>
+    <thead><tr><th>Block</th><th>Parameter</th><th>Typical</th><th>What it controls</th></tr></thead>
+    <tbody>
+      <tr><td>Activity (each stage)</td><td>distribution / arg1</td><td>Triangular(min, mode, max) or constant per stage</td><td>Cycle time per stage. The slowest stage (highest mean cycle time) is the bottleneck and determines maximum line throughput.</td></tr>
+      <tr><td>Queue (each buffer)</td><td>maximum capacity</td><td>5-20 items</td><td>Physical buffer size between stations. Larger buffers decouple stations and improve throughput but increase WIP inventory cost.</td></tr>
+      <tr><td>Create</td><td>distribution / arg1</td><td>Constant, value = bottleneck cycle time or slightly faster</td><td>Release rate into the line. For push systems, set faster than bottleneck. For pull/kanban, use Gate blocks to control release.</td></tr>
+      <tr><td>Activity</td><td>delayType</td><td>fixed or distribution</td><td>Use 'fixed' for deterministic lines; 'distribution' adds variability. Variability at any stage reduces effective throughput below theoretical maximum.</td></tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section class="common-mistakes">
+  <h2>Common mistakes</h2>
+  <ul>
+    <li>Omitting Queue blocks between Activity blocks — without buffers, a blocked downstream Activity will also block upstream Activities through back-pressure, which may or may not be intended; always explicitly add Queue blocks and set their capacities to match physical reality</li>
+    <li>Making all stage cycle times equal and expecting perfect throughput — variability at any stage causes blocking and starving even when means are balanced; use realistic distributions (triangular or normal) rather than constants</li>
+    <li>Setting Create inter-arrival time faster than the bottleneck cycle time — the system never reaches steady state and buffers fill indefinitely; the Create rate should not exceed 1/bottleneck_cycle_time</li>
+    <li>Forgetting that the Activity block processes one item at a time by default — if a real machine processes batches, use Batch block before the Activity or set appropriate delay to reflect batch cycle time</li>
+  </ul>
+  </section>
+
+  <section class="key-metrics">
+  <h2>What to measure</h2>
+  <ul>
+    <li>Throughput rate (FinishedGoods items per hour)</li>
+    <li>Station utilization per stage (identify bottleneck as highest utilization)</li>
+    <li>Average WIP inventory in each buffer queue</li>
+    <li>Average total cycle time from raw material to finished goods</li>
+    <li>Buffer overflow frequency (if finite buffer capacity is set)</li>
+  </ul>
+  </section>
+
+  <section class="variations">
+  <h2>Variations</h2>
+  <ul>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+    <li>[object Object]</li>
+  </ul>
+  </section>
+</main>
+</body>
+</html>
