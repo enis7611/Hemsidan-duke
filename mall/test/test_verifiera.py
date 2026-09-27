@@ -64,5 +64,34 @@ try:
 finally:
     httpd.shutdown()
 
+# 4. Sida på nivå 3 med lang: en: /-länkar, länkar som slutar med /, ../-länkar och EN-start
+with tempfile.TemporaryDirectory() as tmp:
+    tmp = Path(tmp)
+    shutil.copy(ROT / "site" / "index.html", tmp / "index.html")
+    (tmp / "a" / "b").mkdir(parents=True)
+    (tmp / "a" / "b" / "index.html").write_text("<!doctype html><html><body><p id='x'>B</p></body></html>", encoding="utf-8")
+    innehall = tmp / "djup.html"
+    innehall.write_bytes((
+        "<!--\ntitle: Djup\ndescription: D\nlang: en\nrobots: noindex, nofollow\npage-css:\n-->\n"
+        '<section style="background:var(--white);"><div class="container">'
+        '<a href="/a/b/">rot-absolut mapp</a> <a href="/a/b/#x">rot-absolut ankare</a> '
+        '<a href="../../b/">relativ mapp</a> <a href="/a/b/index.html">rot-absolut fil</a> '
+        '<a href="/a/b/finns%20ej/">trasig</a></div></section>\n').encode("utf-8"))
+    subprocess.run(["pwsh", "-File", str(ROT / "mall" / "bygg-sida.ps1"), "-Innehall", str(innehall),
+                    "-Sokvag", "a/b/c/index.html", "-Ut", str(tmp)], check=True, capture_output=True)
+    fel = verifiera(tmp, "a/b/c/index.html", None, None, forvantat_sprak="en")
+    for f in fel:
+        print("     rapporterat:", f)
+    ok(not innehaller(fel, "/a/b/ pekar") and not innehaller(fel, "/a/b/#x") and not innehaller(fel, "../../b/"),
+       "/-länkar, länkar som slutar med / och ../-länkar godtas")
+    ok(not innehaller(fel, "index.html#"), "header-/footerlänkar ../../../index.html#… fungerar")
+    ok(innehaller(fel, "finns%20ej"), "trasig länk med %-kodning rapporteras")
+    ok(not innehaller(fel, "EN-läge"), "sidan startar i EN-läge")
+    ok(any(f for f in fel) and len([f for f in fel if "finns%20ej" not in f]) == 0, "inga andra fel")
+
+# 5. forvantat_sprak='en' på en svensk sida ger fel
+fel = verifiera(ROT / "site", "extendmqtt.html", None, None, forvantat_sprak="en")
+ok(innehaller(fel, "EN-läge"), "sida som inte startar i EN rapporteras")
+
 print("Alla test OK" if fel_antal == 0 else f"{fel_antal} test fallerade")
 sys.exit(1 if fel_antal else 0)
