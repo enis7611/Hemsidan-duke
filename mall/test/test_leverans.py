@@ -25,6 +25,9 @@ def ny_miljo(tmp: Path):
     """Kopia av leveransen + kopia av site/ + tom innehållsmapp."""
     shutil.copytree(FIX, tmp / "ingest")
     shutil.copytree(ROT / "site", tmp / "site")
+    # Utgå från sajten utan tidigare importerade leveranser, så att testet inte beror på repots läge.
+    shutil.rmtree(tmp / "site" / "simulationsmcp", ignore_errors=True)
+    (tmp / "site" / "robots.txt").unlink(missing_ok=True)
     (tmp / "innehall").mkdir()
     return tmp / "ingest", tmp / "site", tmp / "innehall"
 
