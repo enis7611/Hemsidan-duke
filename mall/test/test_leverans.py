@@ -132,5 +132,40 @@ with tempfile.TemporaryDirectory() as tmp:
     a2 = L.arkivera(ingest, "2026-09-26")
     ok(a2.name == "2026-09-26-2", "samma dag → -2")
 
+# 11. Granskning I1: kontrollera utan leverans ger inte OK
+with tempfile.TemporaryDirectory() as tmp:
+    tmp = Path(tmp)
+    (tmp / "ingest").mkdir(); (tmp / "innehall").mkdir()
+    shutil.copytree(ROT / "site", tmp / "site")
+    kod = L.main(["kontrollera", "--ingest", str(tmp / "ingest"), "--site", str(tmp / "site"),
+                  "--innehall", str(tmp / "innehall"), "--utan-webblasare"])
+    ok(kod == 1, f"kontrollera utan urls.json ger exit 1 (fick {kod})")
+
+# 12. Granskning I2: sha256sum-format kopplas, lös hash och MUST utan hash varnas
+filer = {"simulationsmcp/v1/modeling_guides.json", "simulationsmcp/v1/guide-schema.json"}
+h = "a923b679a0efba85b0801d59a9c93eedf41b13faa5259f4c6343f1010d207425"
+up = L.las_upload(chr(10).join(["built 2026-10-01, guides v1.14.0", "1. MUST",
+    "  simulationsmcp/v1/modeling_guides.json", f"  {h}  simulationsmcp/v1/modeling_guides.json",
+    "  sha256: " + "b" * 64]), filer)
+ok(up.summor.get("simulationsmcp/v1/modeling_guides.json") == h, "hash i sha256sum-format kopplas till filen")
+ok(any("utan fil" in v for v in up.varningar), f"lös hash varnas ({up.varningar})")
+up = L.las_upload(chr(10).join(["built 2026-10-01, guides v1.14.0", "1. MUST",
+    "  simulationsmcp/v1/guide-schema.json"]), filer)
+ok(any("MUST" in v and "kontrollsumma" in v for v in up.varningar), f"MUST-fil utan hash varnas ({up.varningar})")
+
+# 13. Granskning I3: kopior under dold rotmapp är binära i git, oavsett filtyp
+for vag in ("site/simulationsmcp/v1/schema.yaml", "site/simulationsmcp/v1/data.txt", "site/simulationsmcp/v1/modeling_guides.json"):
+    ok(L.git_binar(ROT, vag), f"git rör inte radslut: {vag}")
+ok(not L.git_binar(ROT, "site/simulationsmcp/v1/guides/x/index.html"), "guide-HTML är text (LF)")
+
+# 14. Granskning I4: adress utanför tillåtna rotmappar stoppar (skulle stänga hela sajten i robots.txt)
+with tempfile.TemporaryDirectory() as tmp:
+    ingest, site, innehall = ny_miljo(Path(tmp))
+    u = json.loads((ingest / "urls.json").read_text(encoding="utf-8")) + ["/foo.html"]
+    (ingest / "urls.json").write_text(json.dumps(u), encoding="utf-8")
+    (ingest / "foo.html").write_text("<p>x</p>", encoding="utf-8")
+    plan = L.planera(ingest, site, innehall, REGLER)
+    ok(any("utanför" in s for s in plan.stopp), f"rotmapp / stoppar ({plan.stopp})")
+
 print("Alla test OK" if fel_antal == 0 else f"{fel_antal} test fallerade")
 sys.exit(1 if fel_antal else 0)

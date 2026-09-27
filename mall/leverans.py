@@ -25,6 +25,7 @@ MALL = Path(__file__).resolve().parent
 ROT = MALL.parent
 STYRFILER = {"UPLOAD.txt", "urls.json"}
 HEX64 = re.compile(r"^\s*([0-9a-f]{64})\s*$")
+HEX_I_RAD = re.compile(r"\b([0-9a-f]{64})\b")
 EXTERNT = re.compile(r"^(https?:|mailto:|tel:|javascript:|#)", re.I)
 AI_ROBOTAR = ["GPTBot", "ClaudeBot", "CCBot", "Google-Extended", "PerplexityBot", "Bytespider"]
 
@@ -33,6 +34,11 @@ AI_ROBOTAR = ["GPTBot", "ClaudeBot", "CCBot", "Google-Extended", "PerplexityBot"
 
 def las_regler(fil=MALL / "adressregler.json"):
     return json.loads(Path(fil).read_text(encoding="utf-8"))["prefix"]
+
+
+def las_tillatna(fil=MALL / "adressregler.json"):
+    """Mappar där en leverans får publicera. Allt i en leverans döljs i robots.txt, så '/' får aldrig bli en rotmapp."""
+    return json.loads(Path(fil).read_text(encoding="utf-8"))["tillatna_rotmappar"]
 
 
 def skriv_om(adress, regler):
@@ -93,12 +99,15 @@ def las_upload(text, filer):
             up.must.update(namnda)
         if namnda and re.search(r"curl|Invoke-WebRequest", rad):
             senaste = max(namnda, key=len)
-        h = HEX64.match(rad)
-        if h:
-            if senaste:
-                up.summor[senaste] = h.group(1)
+        for h in HEX_I_RAD.findall(rad):
+            if namnda:
+                up.summor[max(namnda, key=len)] = h
+            elif HEX64.match(rad) and senaste:
+                up.summor[senaste] = h
             else:
-                up.varningar.append(f"Kontrollsumma utan fil i UPLOAD.txt: {h.group(1)[:12]}…")
+                up.varningar.append(f"Kontrollsumma utan fil i UPLOAD.txt: {h[:12]}…")
+    for f in sorted(up.must - set(up.summor)):
+        up.varningar.append(f"MUST-fil utan kontrollsumma i UPLOAD.txt: {f}")
     return up
 
 
@@ -160,6 +169,10 @@ def planera(ingest, site, innehall, regler):
     plan.facit = [skriv_om(a, regler) for a in radata]
     plan.regler_anvanda = any(skriv_om(a, regler) != a for a in radata)
     plan.rotmappar = rotmappar(plan.facit)
+    tillatna = las_tillatna()
+    for rm in plan.rotmappar:
+        if not any(rm.startswith(t) for t in tillatna):
+            plan.stopp.append(f"Rotmapp {rm} ligger utanför tillåtna {tillatna} – den skulle stängas i robots.txt")
     filer = _leveransfiler(ingest)
 
     if (ingest / "UPLOAD.txt").is_file():
@@ -297,6 +310,12 @@ def _inlankar(site, rotmappar):
     return fel
 
 
+def git_binar(repo, vag):
+    """True om git aldrig ändrar radslut i filen (attributet text är unset)."""
+    r = subprocess.run(["git", "-C", str(repo), "check-attr", "text", "--", vag], capture_output=True, text=True)
+    return r.returncode == 0 and r.stdout.strip().endswith(": text: unset")
+
+
 def kontrollera(plan, ingest, site, webblasare=True):
     ingest, site = Path(ingest), Path(site)
     fel = []
@@ -311,6 +330,12 @@ def kontrollera(plan, ingest, site, webblasare=True):
             fel.append(f"{p.mal} är inte byte-identisk med leveransen")
         elif p.summa and _sha(ut.read_bytes()) != p.summa:
             fel.append(f"{p.mal}: kontrollsumman stämmer inte med UPLOAD.txt")
+        try:
+            i_repo = ut.resolve().relative_to(ROT).as_posix()
+        except ValueError:
+            i_repo = None
+        if i_repo and not git_binar(ROT, i_repo):
+            fel.append(f"{i_repo}: git kan ändra radslut (lägg sökvägen som -text i .gitattributes)")
     fel += _inlankar(site, plan.rotmappar)
     robots = (site / "robots.txt").read_text(encoding="utf-8") if (site / "robots.txt").is_file() else ""
     for rm in plan.rotmappar:
@@ -390,6 +415,10 @@ def main(argv=None):
         if sidor:
             print("Vanliga sidor att hantera med omdöme (SKILL steg 2–5): " + ", ".join(sidor))
         return 0
+    if plan.stopp:
+        print(beskriv(plan))
+        print("Kan inte kontrollera: planen har STOPP (ingen eller trasig leverans i ingest/).")
+        return 1
     fel = kontrollera(plan, a.ingest, a.site, webblasare=not a.utan_webblasare)
     for f in fel:
         print("FEL:", f)

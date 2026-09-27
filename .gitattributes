@@ -4,3 +4,6 @@
 *.py   text eol=lf
 *.md   text eol=lf
 *.json -text
+# Allt som servrar hämtar under /simulationsmcp/v1/ ska vara byte-exakt; guidernas HTML är vanlig text.
+site/simulationsmcp/v1/** -text
+site/simulationsmcp/v1/guides/**/*.html text eol=lf
